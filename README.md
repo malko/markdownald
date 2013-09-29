@@ -1,4 +1,4 @@
-# Markdownald
+# <img src="https://raw.github.com/malko/markdownald/master/markdownald.png" valign="middle"/> Markdownald
 This is another node-webkit application for markdown editing.
 It's really targeted for github flavored markdown and try to be a real desktop app, not a web app ported to node-webkit.
 
