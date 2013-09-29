@@ -32,6 +32,7 @@
 		//-- exposing some global to modules
 		global.$ = jQuery;
 		global.CodeMirror = CodeMirror;
+		global.settings = JSON.parse(localStorage.getItem('settings')) || {};
 
 		//--- setting app menu
 		global.gui = require('nw.gui');
@@ -213,6 +214,19 @@
 		});
 
 
+		core.on('menu.settings.wrapon', function(){
+			global.settings.wrapmode = true;
+			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', true); });
+			localStorage.setItem('settings', JSON.stringify(global.settings));
+		});
+		core.on('menu.settings.wrapoff', function(){
+			global.settings.wrapmode = false;
+			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', false); })
+			localStorage.setItem('settings', JSON.stringify(global.settings));
+		});
+
+
+
 		//-- restore last opened files
 		if( ! lastOpened.length ){
 			core.emit('menu.file.new');
@@ -231,8 +245,8 @@
 			saveWindowState();
 			if( ! $('#tabs .dirty').length ){
 				global.gui.App.quit();
-			} else {
-				window.confirm('Some files seems unsaved.\nAre you sure you want to quit ?') && global.gui.App.quit();
+			} else if( window.confirm('Some files seems unsaved.\nAre you sure you want to quit ?')) {
+				global.gui.App.quit();
 			}
 		});
 	})();

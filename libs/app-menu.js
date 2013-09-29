@@ -108,6 +108,21 @@
 		.append('outdent',function(){ core.emit('menu.edit.outdent');})
 	);
 
+	//-- SETTINGS
+	appMenu.append(subMenuItem('settings')
+		.append('_wrap long lines',{
+			type:'checkbox'
+			, click:function(){
+				if( this.checked ){
+					core.emit('menu.settings.wrapon');
+				} else {
+					core.emit('menu.settings.wrapoff');
+				}
+			}
+			, checked: !! global.settings.wrapmode
+		})
+	);
+
 	// finally add the menu to the window
 	gui.Window.get().menu = appMenu;
 })();

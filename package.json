@@ -1,15 +1,16 @@
 {
-  "name": "markdownald",
-  "main": "index.html",
-  "window": {
-    "min_width": 640,
-    "min_height": 480,
-    "toolbar": false,
-    "show": false
-  },
-  "dependencies": {
-    "marked": "~0.2.9",
-    "codemirror": "~3.18.0",
-    "highlight.js": "~7.3.0"
-  }
+	"name": "markdownald",
+	"main": "index.html",
+	"window": {
+		"min_width": 640,
+		"min_height": 480,
+		"toolbar": false,
+		"show": false,
+		"icon": "markdownald.png"
+	},
+	"dependencies": {
+		"marked": "~0.2.9",
+		"codemirror": "~3.18.0",
+		"highlight.js": "~7.3.0"
+	}
 }

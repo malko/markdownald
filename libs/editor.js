@@ -18,12 +18,13 @@ function Editor(filePath, content){
 	self.content = content;
 	self.active = false;
 	self.editor = CodeMirror(self.el[0], {
-		value: content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```',
-		mode: "markdown",
-		indentWithTabs: true,
-		lineNumbers: true,
-		theme:'ambiance',
-		extraKeys:{
+		value: content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
+		, mode: "markdown"
+		, indentWithTabs: true
+		, lineNumbers: true
+		, lineWrapping: !!global.settings.wrapmode
+		, theme:'ambiance'
+		, extraKeys:{
 			'Tab':function(cm){ CodeMirror.commands["indentMore"](cm); }
 			, 'Shift-Tab':function(cm){ CodeMirror.commands["indentLess"](cm); }
 			, 'Enter':function(cm){
@@ -66,5 +67,10 @@ module.exports = {
 	},
 	tabOpen: function(filePath, content){
 		return new Editor(filePath, content);
+	},
+	cmApplyAll: function(cb){
+		$('#editors .CodeMirror').each(function(){
+			cb(this.CodeMirror);
+		});
 	}
 };
