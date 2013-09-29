@@ -1,0 +1,107 @@
+html{
+  height:100%;
+}
+body{
+  background: #444;
+  color:#fff;
+  margin:0 ;
+  height:100%;
+  vertical-align:top;
+}
+
+#tabs{
+  position:absolute;
+  top:5%;
+  left:0;
+  white-space: nowrap;
+  overflow-Y:hidden;
+  overflow-X:auto;
+  font-family:Arial;
+  font-size:.8em;
+  line-height:1.5em;
+  height:2em;
+  width:100%;
+  z-index:1;
+  margin-top:-1.5em;
+  div{
+    display:inline-block;
+    border:solid silver 1px;
+    border-bottom:none;
+    border-radius:3px 3px 0 0;
+    padding:0 1.5em 0 .25em;
+    position:relative;
+    margin:0 0.5px;
+    cursor:pointer;
+    &.active{
+      background:#333;
+    }
+    .close{
+      position:absolute;
+      top:50%;
+      margin-top:-.5em;
+      right:.25em;
+      background:#933;
+      width:1em;
+      height:1em;
+      line-height:1em;
+      text-align:center;
+      border-radius:2px;
+      visibility:hidden;
+    }
+    &:hover{
+      .close{
+	display:block;
+	visibility:visible;
+      }
+    }
+    &.dirty:after{
+      content:"*";
+      position:absolute;
+    }
+  }
+}
+
+
+sectionRadius=.5em
+
+#panes{
+  height:94%;
+  width:100%;
+  position:absolute;
+  left:0;
+  top:5%;
+}
+
+#editors{
+  display:inline-block;
+  position:relative;
+  width:49%;
+  margin:0 .5%;
+  height:100%;
+  > div{
+    display:none;
+    &.active{
+      display:block;
+    }
+  }
+  > div, .CodeMirror{
+    border-radius: sectionRadius;
+    height:100%;
+  }
+}
+
+#preview{
+  display:inline-block;
+  position:relative;
+  width:47%;
+  margin:0 .5%
+  vertical-align:top;
+  height:100%;
+  padding:0 1%;
+  overflow:auto;
+  border-radius:sectionRadius;
+  background:#333;
+  font-family: Helvetica, arial, freesans, clean, sans-serif;
+}
+
+
