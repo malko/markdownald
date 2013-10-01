@@ -227,14 +227,18 @@
 
 
 
-		//-- restore last opened files
-		if( ! lastOpened.length ){
-			core.emit('menu.file.new');
-		} else {
-			lastOpened.forEach(function(filePath){
-				editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
-			});
-		}
+		//-- restore last opened files if any
+		lastOpened && lastOpened.forEach(function(filePath){
+			editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
+		});
+		// open from command line
+		global.gui.App.argv.forEach(function(arg){
+			if (fs.existsSync(arg)) {
+				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
+			}
+		})
+		//if no file opened open a new one
+		$('#tabs > div').length || core.emit('menu.file.new');
 
 
 		//-- avoid quiting with dirty files
@@ -249,6 +253,7 @@
 				global.gui.App.quit();
 			}
 		});
+
 	})();
 	</script>
 </body>
