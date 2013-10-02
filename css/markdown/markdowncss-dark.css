@@ -1,6 +1,6 @@
 /* modified version of https://bitbucket.org/kevinburke/markdowncss */
 #preview{
-    font-family: Georgia, Palatino, serif;
+    font-family: Helvetica, arial, freesans, clean, sans-serif;
     line-height: 1;
 }
 #preview h1, #preview h2, #preview h3, #preview h4 {
@@ -43,7 +43,7 @@
     color: purple;
 }
 #preview ul, #preview ol {
-    padding: 0;
+    padding: 0 0 0 30px;
     margin: 0;
 }
 #preview li {
@@ -63,7 +63,7 @@
     white-space: pre-wrap;
 }
 #preview code {
-    font-family: Consolas, Monaco, Andale Mono, monospace;
+    font-family: Consolas, "Liberation Mono", Courier, monospace;
     line-height: 1.5;
     font-size: 13px;
 }

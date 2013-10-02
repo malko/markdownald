@@ -25,8 +25,8 @@ $ ./markdownald/markdownald.sh
 - [x] check for dirty file before closing tab / window
 - [ ] add editor bindings for common style opération (bold, underline, add link, images...)
 - [ ] add recent list file management to the file menu
-- [ ] add mode wrap to user settings
-- [ ] better css for markdown rendering
+- [x] add mode wrap to user settings
+- [x] better css for markdown rendering
 - [ ] allow users to change theme settings
 - [ ] integrate with github api to read and save directly from github
 - [ ] export generated output to html / pdf ...
