@@ -74,7 +74,7 @@ echo "Terminal=false" >> $dektopFile
 echo "Path=$dest" >> $dektopFile
 echo "Exec=$dest/markdownald.sh" >> $dektopFile
 echo "Icon=$dest/markdownald.png" >> $dektopFile
-echo "MimeType=text/x-retext-markdown;" >> $dektopFile
+echo "MimeType=text/x-retext-markdown;text/x-markdown;text/markdown" >> $dektopFile
 
 echo "Cleaning tmp install dir"
 rm -rf $tmpdir

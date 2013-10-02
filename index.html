@@ -8,6 +8,7 @@
 	<link rel=stylesheet href="node_modules/codemirror/lib/codemirror.css">
 	<link href="node_modules/codemirror/theme/ambiance.css" type="text/css" rel="stylesheet" />
 	<link href="css/highlightjs/zenburn.css" type="text/css" rel="stylesheet" />
+	<link href="css/markdown/markdowncss-dark.css" type="text/css" rel="stylesheet" />
 
 	<script src="libs/winsize.js"></script>
 	<script src="libs/jquery-1.10.2.js"></script>
@@ -228,9 +229,23 @@
 
 
 		//-- restore last opened files if any
-		lastOpened && lastOpened.forEach(function(filePath){
-			editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
-		});
+		(function(){
+			var errors = [];
+			lastOpened && lastOpened.forEach(function(filePath){
+				try{
+					editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
+				} catch(e) {
+					errors.push(filePath);
+				}
+			});
+			if (errors.length) {
+				lastOpened = lastOpened.filter(function(filePath){
+					return !~errors.indexOf(filePath);
+				});
+				localStorage.setItem('settings.opened', JSON.stringify(lastOpened));
+				window.alert('Some files were not found:\n\t- ' + errors.join('\n\t- '));
+			}
+		})();
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
 			if (fs.existsSync(arg)) {
