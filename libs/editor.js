@@ -30,6 +30,7 @@ function Editor(filePath, content){
 			, 'Enter':function(cm){
 				if( cm.somethingSelected() ){
 					cm.replaceSelection('\n');
+					cm.setCursor(cm.getCursor("end"));
 				} else {
 					var cursor = cm.getCursor()
 						, line = cm.getLine(cursor.line)
