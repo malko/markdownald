@@ -34,6 +34,7 @@ body{
     cursor:pointer;
     &.active{
       background:#333;
+      font-style:italic;
     }
     .close{
       position:absolute;

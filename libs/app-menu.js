@@ -37,7 +37,7 @@
 		label && (args.label = label);
 
 		var item = new gui.MenuItem(args);
-		if( ~label.indexOf('_') ){
+		if( ~label.indexOf('_') && !~label.indexOf('(') ){
 			var key;
 			item.label = args.label && args.label.replace(/_(.)/,function(m,k){
 				key= ' (Ctrl+' + k + ')';
@@ -111,6 +111,9 @@
 
 	//-- VIEW MENU
 	appMenu.append(subMenuItem('view')
+		.append('next tab (Ctrl+PAGE_UP)', function(){ core.emit('menu.view.tab-next');})
+		.append('previous tab (Ctrl+PAGE_DOWN)', function(){ core.emit('menu.view.tab-prev');})
+		.appendSeparator()
 		.append('toggle application fullscreen (F11)',function(){ core.emit('menu.view.fullscreen'); })
 		.append('toggle editor pane _fullscreen',function(){ core.emit('menu.view.fullscreen-editor'); })
 		.append('toggle _preview pane fullscreen',function(){ core.emit('menu.view.fullscreen-preview'); })

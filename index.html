@@ -228,6 +228,14 @@
 				pane.addClass('fullscreen');
 			}
 		}
+		function goTabNextPrev(nextOrPrev){
+			var tabs = $('#tabs > div[id^=tab]')
+				tab = tabs.filter('.active')
+				next = tab[nextOrPrev]('div[id^=tab]')
+			;
+			next.length || (next = tabs.get(nextOrPrev === 'next' ? 0 : tabs.length - 1));
+			next.click();
+		}
 		core.on('menu.view.fullscreen', function(){
 			global.gui.Window.get().toggleFullscreen();
 		});
@@ -237,7 +245,8 @@
 		core.on('menu.view.fullscreen-preview', function(){
 			togglePaneFullScreen('preview');
 		});
-
+		core.on('menu.view.tab-next', function(){ goTabNextPrev('next')});
+		core.on('menu.view.tab-prev', function(){ goTabNextPrev('prev')});
 		//-- menu settings binding
 		core.on('menu.settings.wrapon', function(){
 			global.settings.wrapmode = true;
