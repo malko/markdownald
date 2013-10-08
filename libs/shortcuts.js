@@ -103,8 +103,6 @@ var core = require('./core.js')
 ;
 
 
-
-
 function standardize(shortcut){
 	//- console.log(shortcut)
 	var keys;

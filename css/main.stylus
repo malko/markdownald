@@ -17,7 +17,7 @@ body{
   overflow-Y:hidden;
   overflow-X:auto;
   font-family:Arial;
-  font-size:.8em;
+  font-size:.9em;
   line-height:1.5em;
   height:2em;
   width:100%;

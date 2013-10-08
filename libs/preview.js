@@ -1,7 +1,7 @@
 var core = require('./core.js')
 	, marked = require('marked')
 	, hljs = require('highlight.js')
-	, preview = $('#preview')
+	, preview = $('#preview > .content')
 	, processing = false
 ;
 

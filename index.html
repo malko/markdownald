@@ -21,7 +21,7 @@
 	<input type="file" id="fileopen" style="display:none" accept=".markdow,.md,.txt" multiple>
 	<input type="file" id="filesaveas" style="display:none" nwsaveas />
 	<div id="tabs"></div>
-	<div id=panes><div id="editors"></div><div id="preview"></div></div>
+	<div id=panes><div id="editors"></div><div id="preview"><div class="content"></div></div></div>
 	<script>
 	(function(){
 		//--- application settings
@@ -274,7 +274,11 @@
 				core.emit('font-size.change', fontSize);
 			}
 		});
-		core.on('font-size.change',function(size){ $('body').css('fontSize', size + 'px'); });
+		core.on('font-size.change',function(size){
+			$('body').css('fontSize', size + 'px');
+			var editor = $('.CodeMirror:visible');
+			editor.length && editor.get(0).CodeMirror.refresh();
+		});
 
 		core.on('menu.settings.theme-editor',function(theme){
 			var head = $('head');
@@ -334,6 +338,25 @@
 				global.gui.App.quit();
 			}
 		});
+
+		//-- bind scrollbars togethers
+		core.on('editor.scroll', function(){
+			var editorScroll = $('.CodeMirror-vscrollbar:visible')
+				, preview = $('#preview')
+				, eh = editorScroll.children().height()
+				, ph = preview.find(' > .content').height()
+				, ratio =  ph / eh
+			;
+			preview.scrollTop( Math.round(ratio * editorScroll.scrollTop()) );
+		})
+		core.on('editor.change', function(){ core.emit('editor.scroll');})
+		document.addEventListener('scroll', function(e){
+			if ( ! $(e.target).is('.CodeMirror-vscrollbar:visible') ) {
+				return;
+			}
+			core.emit('editor.scroll');
+		}, true);
+
 
 	})();
 	</script>
