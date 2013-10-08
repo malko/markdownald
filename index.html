@@ -27,6 +27,7 @@
 		//--- application settings
 		var recentFiles = JSON.parse(localStorage.getItem('settings.recents')) || []
 			, lastOpened = JSON.parse(localStorage.getItem('settings.opened')) || []
+			, editorTheme = localStorage.getItem('settings.theme-editor') || 'ambiance'
 			, maxRecentFileSize = 10
 		;
 
@@ -249,6 +250,18 @@
 			localStorage.setItem('settings', JSON.stringify(global.settings));
 		});
 
+		core.on('menu.settings.theme-editor',function(theme){
+			var head = $('head');
+			if( ! head.find('link[href$="' + theme + '.css"]').length ){
+				head.append('<link href="node_modules/codemirror/theme/' + theme + '.css" type="text/css" rel="stylesheet" />');
+			}
+			$('.CodeMirror').each(function(){
+				this.CodeMirror && this.CodeMirror.setOption('theme',theme);
+			})
+			localStorage.setItem('settings.theme-editor', theme);
+		});
+		core.emit('menu.settings.theme-editor', editorTheme);
+
 
 
 		//-- restore last opened files if any
@@ -269,13 +282,15 @@
 				window.alert('Some files were not found:\n\t- ' + errors.join('\n\t- '));
 			}
 		})();
+
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
 			if (fs.existsSync(arg)) {
 				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
 			}
 		})
-		//if no file opened open a new one
+
+		// if no file opened open a new one
 		$('#tabs > div').length || core.emit('menu.file.new');
 
 

@@ -81,6 +81,7 @@
 	}
 
 	var core = require('./core.js')
+		, fs = require('fs')
 		, appMenu = new gui.Menu({type:'menubar'})
 	;
 	require('./filemanager.js');
@@ -101,11 +102,11 @@
 	appMenu.append(subMenuItem('edit')
 		.append('_bold',function(){ core.emit('menu.edit.bold'); })
 		.append('_italic',function(){ core.emit('menu.edit.italic'); })
-		.appendSeparator()
-		.append('ordered list',function(){ core.emit('menu.edit.orderedlist'); })
-		.append('unordered list',function(){ core.emit('menu.edit.unorderedlist'); })
-		.append('indent',function(){ core.emit('menu.edit.indent'); })
-		.append('outdent',function(){ core.emit('menu.edit.outdent');})
+		//- .appendSeparator()
+		//- .append('ordered list',function(){ core.emit('menu.edit.orderedlist'); })
+		//- .append('unordered list',function(){ core.emit('menu.edit.unorderedlist'); })
+		//- .append('indent',function(){ core.emit('menu.edit.indent'); })
+		//- .append('outdent',function(){ core.emit('menu.edit.outdent');})
 	);
 
 	//-- VIEW MENU
@@ -116,6 +117,7 @@
 	);
 
 	//-- SETTINGS
+	var editorThemeSubMenu = subMenuItem('Editor theme');
 	appMenu.append(subMenuItem('settings')
 		.append('_wrap long lines',{
 			type:'checkbox'
@@ -128,7 +130,23 @@
 			}
 			, checked: !! global.settings.wrapmode
 		})
+		.appendSeparator()
+		.append(editorThemeSubMenu)
 	);
+
+	// get and append editor themes
+	fs.readdir('./node_modules/codemirror/theme', function(err, themes){
+		themes.forEach(function(theme){
+			editorThemeSubMenu.append(
+				theme = theme.replace(/.css$/,''),
+				function(){
+					core.emit('menu.settings.theme-editor', theme);
+				}
+			)
+		});
+	});
+
+
 
 	// finally add the menu to the window
 	gui.Window.get().menu = appMenu;

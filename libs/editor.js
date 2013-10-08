@@ -23,7 +23,6 @@ function Editor(filePath, content){
 		, indentWithTabs: true
 		, lineNumbers: true
 		, lineWrapping: !!global.settings.wrapmode
-		, theme:'ambiance'
 		, extraKeys:{
 			'Tab':function(cm){ CodeMirror.commands["indentMore"](cm); }
 			, 'Shift-Tab':function(cm){ CodeMirror.commands["indentLess"](cm); }
@@ -61,6 +60,10 @@ Editor.prototype.changePath = function(newPath){
 	setFilePath.call(this, newPath);
 	core.emit('editor.filepath.changed', this, newPath);
 }
+
+core.on('menu.settings.theme-editor',function(theme){
+	CodeMirror.defaults.theme = theme;
+});
 
 module.exports = {
 	tabNew: function(){
