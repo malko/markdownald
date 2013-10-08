@@ -51,8 +51,8 @@ body{
     }
     &:hover{
       .close{
-	display:block;
-	visibility:visible;
+        display:block;
+        visibility:visible;
       }
     }
     &.dirty:after{
@@ -78,8 +78,8 @@ sectionRadius=.5em
     #editors, #preview{
       display:none;
       &.fullscreen{
-	display:block;
-	width:99%;
+        display:block;
+        width:99%;
       }
     }
     #preview.fullscreen{

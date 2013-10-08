@@ -12,22 +12,22 @@
     padding: 0;
 }
 #preview h1 {
-    font-size: 48px;
+    font-size: 3em;
 }
 #preview h2 {
-    font-size: 36px;
+    font-size: 2.25em;
     /* The bottom margin is small. It's designed to be used with gray meta text
      * below a post title. */
     margin: 24px 0 6px;
 }
 #preview h3 {
-    font-size: 24px;
+    font-size: 1.5em;
 }
 #preview h4 {
-    font-size: 21px;
+    font-size: 1.3125em;
 }
 #preview h5 {
-    font-size: 18px;
+    font-size: 1.125em;
 }
 #preview a {
     color: #0099ff;
@@ -47,14 +47,14 @@
     margin: 0;
 }
 #preview li {
-    line-height: 24px;
+    line-height: 1.5em;
 }
 #preview li ul, #preview li ul {
     margin-left: 24px;
 }
 #preview p, #preview ul, #preview ol {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 1em;
+    line-height: 1.5em;
     max-width: 540px;
 }
 #preview pre {
@@ -64,8 +64,8 @@
 }
 #preview code {
     font-family: Consolas, "Liberation Mono", Courier, monospace;
-    line-height: 1.5;
-    font-size: 13px;
+    line-height: 1.5em;
+    font-size: .8125em;
 }
 #preview aside {
     display: block;
@@ -79,15 +79,15 @@
     max-width: 476px;
 }
 #preview blockquote  cite {
-    font-size:14px;
-    line-height:20px;
+    font-size:0.875em;
+    line-height:1.25em;
     color:#bfbfbf;
 }
 #preview blockquote cite:before {
     content: '\2014 \00A0';
 }
 
-#preview blockquote p {  
+#preview blockquote p {
     color: #666;
     max-width: 460px;
 }
@@ -142,7 +142,7 @@ input,
 #preview select,
 #preview textarea {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-size: .8125em;
   font-weight: normal;
   line-height: normal;
   margin-bottom: 18px;
@@ -158,9 +158,9 @@ input,
   display: inline-block;
   width: 210px;
   padding: 4px;
-  font-size: 13px;
+  font-size: .8125em;
   font-weight: normal;
-  line-height: 18px;
+  line-height: 0.9em;
   height: 18px;
   color: #808080;
   border: 1px solid #ccc;
@@ -168,8 +168,8 @@ input,
   border-radius: 3px;
 }
 #preview select, #preview input[type=file] {
-  height: 27px;
-  line-height: 27px;
+  height: 1.6875em;
+  line-height: 1.6875em;
 }
 #preview textarea {
   height: auto;
@@ -201,8 +201,8 @@ input,
   display: inline-block;
   padding: 4px 14px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  line-height: 18px;
+  font-size: .8125em;
+  line-height: 1.125em;
   -webkit-border-radius: 4px;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);

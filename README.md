@@ -37,6 +37,7 @@ $ ./markdownald/markdownald.sh
   - [ ] add a display for checkboxes as on github flavord markdown
 - [-] allow users to change theme settings
   - [x] for editor
+  - [x] font size
   - [ ] for markdown
   - [ ] for interface
 - [ ] integrate with github api to read and save directly from github

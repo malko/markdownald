@@ -83,11 +83,22 @@ var core = require('./core.js')
 		, F10:121
 		, F11:122
 		, F12:123
+		, ADD:187
+		, PLUS:187
+		, EQUAL:187
+		, '+':187
+		, '=':187
 		, COMMA:188
 		, ',':188
+		, MINUS:189
+		, SUBSTRACT:189
+		, UNDERSCORE:189
+		, '-':189
+		, '_':189
 		, PERIOD:190
 		, '.':190
 	}
+	, keyExp = new RegExp("^.*?\\b([a-zA-Z0-9-]+|" + Object.keys(keyCodes).map(function(a){ return a.replace(/([+?|.\\$^*])/g,"\\$1")}).join('|') + ")$",'i')
 	, shortcut
 ;
 
@@ -101,7 +112,7 @@ function standardize(shortcut){
 		keys = { Alt: !!shortcut.match(/\bAlt\b/)
 			, Ctrl: !!shortcut.match(/\bCtrl\b/)
 			, Shift: !!shortcut.match(/\bShift\b/)
-			, key: shortcut.replace(/^.*?\b([a-zA-Z_0-9]+)$/,'$1').toUpperCase()
+			, key: shortcut.replace(keyExp, '$1').toUpperCase()
 		};
 		keys.keyCode=( typeof keyCodes[keys.key] === 'undefined')?keys.key:keyCodes[keys.key];
 	} else {// consider to work on an event

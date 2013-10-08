@@ -28,6 +28,7 @@
 		var recentFiles = JSON.parse(localStorage.getItem('settings.recents')) || []
 			, lastOpened = JSON.parse(localStorage.getItem('settings.opened')) || []
 			, editorTheme = localStorage.getItem('settings.theme-editor') || 'ambiance'
+			, fontSize = localStorage.getItem('settings.font-size') || 16
 			, maxRecentFileSize = 10
 		;
 
@@ -247,6 +248,8 @@
 		});
 		core.on('menu.view.tab-next', function(){ goTabNextPrev('next')});
 		core.on('menu.view.tab-prev', function(){ goTabNextPrev('prev')});
+
+
 		//-- menu settings binding
 		core.on('menu.settings.wrapon', function(){
 			global.settings.wrapmode = true;
@@ -259,6 +262,20 @@
 			localStorage.setItem('settings', JSON.stringify(global.settings));
 		});
 
+		core.on('menu.settings.font-increment', function(){
+			if (fontSize < 51) {
+				localStorage.setItem('settings.font-size', ++fontSize);
+				core.emit('font-size.change', fontSize);
+			}
+		});
+		core.on('menu.settings.font-decrement', function(){
+			if (fontSize > 6) {
+				localStorage.setItem('settings.font-size', --fontSize);
+				core.emit('font-size.change', fontSize);
+			}
+		});
+		core.on('font-size.change',function(size){ $('body').css('fontSize', size + 'px'); });
+
 		core.on('menu.settings.theme-editor',function(theme){
 			var head = $('head');
 			if( ! head.find('link[href$="' + theme + '.css"]').length ){
@@ -269,7 +286,9 @@
 			})
 			localStorage.setItem('settings.theme-editor', theme);
 		});
+		// restore settings
 		core.emit('menu.settings.theme-editor', editorTheme);
+		core.emit('font-size.change', fontSize);
 
 
 

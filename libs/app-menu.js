@@ -133,6 +133,8 @@
 			}
 			, checked: !! global.settings.wrapmode
 		})
+		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('menu.settings.font-increment'); })
+		.append('increase font size (Ctrl+Numpad_subtract)', function(){ core.emit('menu.settings.font-decrement'); })
 		.appendSeparator()
 		.append(editorThemeSubMenu)
 	);
