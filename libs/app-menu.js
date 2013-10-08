@@ -111,8 +111,8 @@
 
 	//-- VIEW MENU
 	appMenu.append(subMenuItem('view')
-		.append('next tab (Ctrl+PAGE_UP)', function(){ core.emit('menu.view.tab-next');})
-		.append('previous tab (Ctrl+PAGE_DOWN)', function(){ core.emit('menu.view.tab-prev');})
+		.append('next tab (Ctrl+PAGE_DOWN)', function(){ core.emit('menu.view.tab-next');})
+		.append('previous tab (Ctrl+PAGE_UP)', function(){ core.emit('menu.view.tab-prev');})
 		.appendSeparator()
 		.append('toggle application fullscreen (F11)',function(){ core.emit('menu.view.fullscreen'); })
 		.append('toggle editor pane _fullscreen',function(){ core.emit('menu.view.fullscreen-editor'); })
