@@ -215,6 +215,29 @@
 		});
 
 
+		//-- menu view binding
+		function togglePaneFullScreen(paneId){
+			var pane = $('#' + paneId)
+				, panes=$('#panes')
+				, alreadyFullScreen = pane.is('.fullscreen')
+			;
+			$('body .fullscreen').removeClass('fullscreen');
+			if(! alreadyFullScreen ){
+				panes.addClass('fullscreen');
+				pane.addClass('fullscreen');
+			}
+		}
+		core.on('menu.view.fullscreen', function(){
+			global.gui.Window.get().toggleFullscreen();
+		});
+		core.on('menu.view.fullscreen-editor', function(){
+			togglePaneFullScreen('editors');
+		});
+		core.on('menu.view.fullscreen-preview', function(){
+			togglePaneFullScreen('preview');
+		});
+
+		//-- menu settings binding
 		core.on('menu.settings.wrapon', function(){
 			global.settings.wrapmode = true;
 			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', true); });

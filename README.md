@@ -24,6 +24,7 @@ $ ./markdownald/markdownald.sh
 - [x] better editor bindings on return and indent/outdent
 - [x] check for dirty file before closing tab / window
 - [ ] add editor bindings for common style opération (bold, underline, add link, images...)
+- [x] add fullscreen support
 - [ ] add recent list file management to the file menu
 - [x] add mode wrap to user settings
 - [x] better css for markdown rendering

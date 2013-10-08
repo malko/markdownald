@@ -6,9 +6,19 @@ body{background:#444;color:#fff;margin:0;height:100%;vertical-align:top}
 #tabs div .close{position:absolute;top:50%;margin-top:-.5em;right:.25em;background:#933;width:1em;height:1em;line-height:1em;text-align:center;border-radius:2px;visibility:hidden}
 #tabs div:hover .close{display:block;visibility:visible}
 #tabs div.dirty:after{content:"*";position:absolute}
-#panes{height:94%;width:100%;position:absolute;left:0;top:5%}
+#panes{height:94%;width:100%;position:absolute;left:0;top:5%;}
+#panes.fullscreen >*{display:none}
+#panes.fullscreen #editors,#panes.fullscreen #preview{display:none;}
+#panes.fullscreen #editors.fullscreen,#panes.fullscreen #preview.fullscreen{display:block;width:99%}
+#panes.fullscreen #preview.fullscreen{width:97%}
 #editors{display:inline-block;position:relative;width:49%;margin:0 .5%;height:100%;}
 #editors > div{display:none;}
 #editors > div.active{display:block}
 #editors > div,#editors .CodeMirror{border-radius:.5em;height:100%}
-#preview{display:inline-block;position:relative;width:47%;margin:0 .5%;vertical-align:top;height:100%;padding:0 1%;overflow:auto;border-radius:.5em;background:#333;font-family:Helvetica,arial,freesans,clean,sans-serif}
+#editors.fullscreen{position:absolute;top:0;left:0;width:100%;height:100%}
+#preview{display:inline-block;position:relative;width:47%;margin:0 .5%;vertical-align:top;height:100%;padding:0 1%;overflow:auto;border-radius:.5em;background:#333;font-family:Helvetica,arial,freesans,clean,sans-serif;}
+#preview.fullscreen{position:absolute;top:0;left:0;width:100%;height:100%}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background-color:#111;border-radius:4px}
+::-webkit-scrollbar-thumb{background-color:#666;border-radius:4px}
+::-webkit-scrollbar-corner{background-color:transparent}

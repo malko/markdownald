@@ -108,6 +108,13 @@
 		.append('outdent',function(){ core.emit('menu.edit.outdent');})
 	);
 
+	//-- VIEW MENU
+	appMenu.append(subMenuItem('view')
+		.append('toggle application fullscreen (F11)',function(){ core.emit('menu.view.fullscreen'); })
+		.append('toggle editor pane _fullscreen',function(){ core.emit('menu.view.fullscreen-editor'); })
+		.append('toggle _preview pane fullscreen',function(){ core.emit('menu.view.fullscreen-preview'); })
+	);
+
 	//-- SETTINGS
 	appMenu.append(subMenuItem('settings')
 		.append('_wrap long lines',{
