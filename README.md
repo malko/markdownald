@@ -22,13 +22,23 @@ $ ./markdownald/markdownald.sh
 
 ## Todo
 - [x] better editor bindings on return and indent/outdent
+- [x] navigate through tabs with keyboard navigation
 - [x] check for dirty file before closing tab / window
-- [ ] add editor bindings for common style opération (bold, underline, add link, images...)
+- [-] add editor bindings for common style opération (bold, underline, add link, images...)
+  - [x] bold, italic
+  - [ ] lists, bloquotes, titles
+  - [ ] images, links
 - [x] add fullscreen support
 - [ ] add recent list file management to the file menu
+- [ ] add detection for disk file change
 - [x] add mode wrap to user settings
-- [x] better css for markdown rendering
-- [ ] allow users to change theme settings
+- [-] better css for markdown rendering
+  - [ ] add some styles
+  - [ ] add a display for checkboxes as on github flavord markdown
+- [-] allow users to change theme settings
+  - [x] for editor
+  - [ ] for markdown
+  - [ ] for interface
 - [ ] integrate with github api to read and save directly from github
 - [ ] export generated output to html / pdf ...
 
