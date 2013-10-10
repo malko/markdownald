@@ -24,18 +24,19 @@
 	<div id=panes><div id="editors"></div><div id="preview"><div class="content"></div></div></div>
 	<script>
 	(function(){
-		//--- application settings
-		var recentFiles = JSON.parse(localStorage.getItem('settings.recents')) || []
-			, lastOpened = JSON.parse(localStorage.getItem('settings.opened')) || []
-			, editorTheme = localStorage.getItem('settings.theme-editor') || 'ambiance'
-			, fontSize = localStorage.getItem('settings.font-size') || 16
-			, maxRecentFileSize = 10
-		;
 
 		//-- exposing some global to modules
 		global.$ = jQuery;
 		global.CodeMirror = CodeMirror;
-		global.settings = JSON.parse(localStorage.getItem('settings')) || {};
+
+		//--- application settings
+		var settings = global.settings = JSON.parse(localStorage.getItem('settings')) || {
+			recentFiles: []
+			, lastOpened: []
+			, fontSize: 16
+			, maxRecentFileSize: 10
+			, editorTheme: 'ambiance'
+		};
 
 		//--- setting app menu
 		global.gui = require('nw.gui');
@@ -47,12 +48,19 @@
 			, fs = require('fs')
 			, editor = require('./libs/editor.js')
 			, preview = require('./libs/preview.js')
-			, activeEditor
 		;
 		require('./libs/shortcuts.js');
+		require('./libs/files.js');
+
+		//-- storage exposition
+		core.on('storage.set', function(key, val){
+			localStorage.setItem(key, JSON.stringify(val));
+		});
+		core.on('storage.get', function(key, cb){
+			cb && cb(JSON.parse(localStorage.setItem(key)));
+		});
 
 		//-- bind hidden file input elements
-		core.on('menu.file.open', function(){ $('input#fileopen').click(); });
 		$('input#fileopen').on('change',function(){
 			var i=0, l=this.files.length;
 			if( !this.files.length ){
@@ -62,29 +70,13 @@
 				core.emit('file.opened',this.files[i].path);
 			}
 		});
-		core.on('file.opened', function(filePath){
-			if( ~lastOpened.indexOf(filePath) ){ // todo check for opened file already in the list of opened file (+ remove it when closed)
-				return ; // avoid listing twice the same file
-			}
-			lastOpened.push(filePath);
-			localStorage.setItem('settings.recents', JSON.stringify(recentFiles));
-			localStorage.setItem('settings.opened', JSON.stringify(lastOpened));
-			editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
-			if( ~recentFiles.indexOf(filePath)){
-				recentFiles.push(filePath);
-				if( recentFiles.length > maxRecentFileSize ){
-					recentFiles.splice(0, recentFiles.length - maxRecentFileSize);
-				}
-			}
-		});
 
-		core.on('menu.file.saveas', function(){ $('#filesaveas').click(); });
 		$('#filesaveas').on('change', function(){
 			if(! this.files.length ){
 				return;
 			}
-			activeEditor.changePath(this.files[0].path);
-			core.emit('menu.file.save');
+			editor.getActive().changePath(this.files[0].path);
+			core.emit('file.save');
 		});
 
 
@@ -93,11 +85,11 @@
 		//-- bind editor to preview
 		core.on('editor.change', function(editor, content){
 			var tab = $('#tab-' + editor.editorId);
-			tab.is('.dirty') || tab.addClass('dirty');
+			tab[editor.editor.isClean() ? 'removeClass' : 'addClass']('dirty');
 			core.emit('preview.update', content);
 		});
 		core.on('editor.selected', function(editor){
-			activeEditor = editor;
+			core.emit('activeEditor.set', editor);
 			$('#tabs > div').removeClass('active')
 				.filter('#tab-'+editor.editorId).addClass('active')
 			;
@@ -124,80 +116,45 @@
 		core.on('editor.filepath.changed', function(editor, newpath){
 			var tab = $('#tabs #tab-' + editor.editorId)
 				, oldPath = tab.attr('title')
-				, lastOpenId = oldPath ? lastOpened.indexOf(oldPath) : -1
+				, lastOpenId = oldPath ? settings.lastOpened.indexOf(oldPath) : -1
 			;
 			if( lastOpenId < 0){
-				lastOpened.push(newpath);
+				settings.lastOpened.push(newpath);
 			} else {
-				lastOpened.splice(lastOpenId,1, newpath);
+				settings.lastOpened.splice(lastOpenId,1, newpath);
 			}
-			localStorage.setItem('settings.opened', JSON.stringify(lastOpened));
+			core.emit('settings.save');
 			$('#tabs #tab-' + editor.editorId).attr('title',newpath)
 				.find('.filename').text(editor.fileName)
 			;
 		});
-		core.on('editor.close', function(editor){
-			var activeTab = $('#tabs #tab-' + editor.editorId);
+		core.on('editor.close', function(editorInstance){
+			var activeTab = $('#tabs #tab-' + editorInstance.editorId);
 			if( activeTab.is('.dirty') && !confirm('File is not saved.\nAre you sure you want to close it anyway ?') ){
 				return;
 			}
 			//-- remove from opened file list
-			var lastOpenId = lastOpened.indexOf(editor.filePath);
+			var lastOpenId = settings.lastOpened.indexOf(editorInstance.filePath);
 			if( lastOpenId >= 0 ){
-				lastOpened.splice(lastOpenId,1);
-				localStorage.setItem('settings.opened', JSON.stringify(lastOpened));
+				settings.lastOpened.splice(lastOpenId,1);
+				core.emit('settings.save');
 			}
-			// get next selected editor if available before removing this one
-			var nextEditorTab;
-			if( editor === activeEditor){
+			// get next selected editorInstance if available before removing this one
+			var activeEditor = editor.getActive(), nextEditorTab;
+			if( editorInstance === activeEditor){
 				nextEditorTab = $('#tabs .active').prev();
 				nextEditorTab.length || (nextEditorTab = $('#tabs .active').next());
-				core.emit('preview.update');
-				activeEditor = undefined;
+				core.emit('activeEditor.set', undefined);
 				nextEditorTab.length && nextEditorTab.click();
 			}
 			activeTab.remove();
-			editor.el.remove();
+			editorInstance.el.remove();
 		});
 
 
 		//-- menu shortcuts binding
-		core.on('menu.file.new', function(){ editor.tabNew(); });
-		core.on('menu.file.save', function(){
-			if(! (activeEditor && activeEditor.filePath)) {
-				core.emit('menu.file.saveas');
-			} else {
-				fs.writeFileSync(activeEditor.filePath, activeEditor.editor.getValue());
-				$('#tab-' + activeEditor.editorId).removeClass('dirty');
-			}
-		});
-		core.on('menu.file.close', function(){
-			core.emit('editor.close', activeEditor);
-		});
-		core.on('menu.edit.bold', function(){
-			var sel = activeEditor && activeEditor.editor.getSelection();
-			if(! sel ){
-				return;
-			}
-			if( sel.match(/^(__|\*\*)[\s\S]+(\1)$/) ){
-				activeEditor.editor.replaceSelection(sel.replace(/^(__|\*\*)([\s\S]+)(\1)$/g,'$2'));
-			} else {
-				sel && activeEditor.editor.replaceSelection('**' + sel + '**');
-			}
-		});
-		core.on('menu.edit.italic', function(){
-			var sel = activeEditor && activeEditor.editor.getSelection();
-			if(! sel ){
-				return;
-			}
-			if( sel.match(/^(_|\*)[\s\S]+(\1)$/) ){
-				activeEditor.editor.replaceSelection(sel.replace(/^(_|\*)([\s\S]+)(\1)$/g,'$2'));
-			} else {
-				sel && activeEditor.editor.replaceSelection('_' + sel + '_');
-			}
-		});
 		/*
-		core.on('menu.edit.orderedlist',function(){
+		core.on('edit.orderedlist',function(){
 			if(! activeEditor){
 				return;
 			}
@@ -209,12 +166,6 @@
 			}
 			//CodeMirror.commands.indentMore(activeEditor.editor);
 		});*/
-		core.on('menu.edit.indent',function(){
-			activeEditor && CodeMirror.commands.indentMore(activeEditor.editor);
-		});
-		core.on('menu.edit.outdent',function(){
-			activeEditor && CodeMirror.commands.indentLess(activeEditor.editor);
-		});
 
 
 		//-- menu view binding
@@ -237,80 +188,70 @@
 			next.length || (next = tabs.get(nextOrPrev === 'next' ? 0 : tabs.length - 1));
 			next.click();
 		}
-		core.on('menu.view.fullscreen', function(){
+		core.on('view.fullscreen', function(){
 			global.gui.Window.get().toggleFullscreen();
 		});
-		core.on('menu.view.fullscreen-editor', function(){
+		core.on('view.fullscreen-editor', function(){
 			togglePaneFullScreen('editors');
 		});
-		core.on('menu.view.fullscreen-preview', function(){
+		core.on('view.fullscreen-preview', function(){
 			togglePaneFullScreen('preview');
 		});
-		core.on('menu.view.tab-next', function(){ goTabNextPrev('next')});
-		core.on('menu.view.tab-prev', function(){ goTabNextPrev('prev')});
+		core.on('view.tab-next', function(){ goTabNextPrev('next')});
+		core.on('view.tab-prev', function(){ goTabNextPrev('prev')});
 
 
 		//-- menu settings binding
-		core.on('menu.settings.wrapon', function(){
+		core.on('settings.wrapon', function(){
 			global.settings.wrapmode = true;
 			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', true); });
 			localStorage.setItem('settings', JSON.stringify(global.settings));
 		});
-		core.on('menu.settings.wrapoff', function(){
+		core.on('settings.wrapoff', function(){
 			global.settings.wrapmode = false;
 			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', false); })
 			localStorage.setItem('settings', JSON.stringify(global.settings));
 		});
 
-		core.on('menu.settings.font-increment', function(){
-			if (fontSize < 51) {
-				localStorage.setItem('settings.font-size', ++fontSize);
-				core.emit('font-size.change', fontSize);
-			}
-		});
-		core.on('menu.settings.font-decrement', function(){
-			if (fontSize > 6) {
-				localStorage.setItem('settings.font-size', --fontSize);
-				core.emit('font-size.change', fontSize);
-			}
-		});
+		
 		core.on('font-size.change',function(size){
 			$('body').css('fontSize', size + 'px');
 			var editor = $('.CodeMirror:visible');
 			editor.length && editor.get(0).CodeMirror.refresh();
 		});
 
-		core.on('menu.settings.theme-editor',function(theme){
-			var head = $('head');
-			if( ! head.find('link[href$="' + theme + '.css"]').length ){
-				head.append('<link href="node_modules/codemirror/theme/' + theme + '.css" type="text/css" rel="stylesheet" />');
-			}
-			$('.CodeMirror').each(function(){
-				this.CodeMirror && this.CodeMirror.setOption('theme',theme);
-			})
-			localStorage.setItem('settings.theme-editor', theme);
-		});
+
+		 core.on('editor.setTheme',function(theme){
+			 var head = $('head');
+			 if( ! head.find('link[href$="' + theme + '.css"]').length ){
+				 head.append('<link href="node_modules/codemirror/theme/' + theme + '.css" type="text/css" rel="stylesheet" />');
+			 }
+			 core.emit('settings.set','theme-editor', theme);
+		 });
 		// restore settings
-		core.emit('menu.settings.theme-editor', editorTheme);
-		core.emit('font-size.change', fontSize);
+		core.emit('settings.theme-editor', settings.editorTheme);
+		core.emit('font-size.change', settings.fontSize);
 
 
 
 		//-- restore last opened files if any
+		function getEditorPane(){
+			return $('<div id="content-' + self.editorId + '"></div>');
+		}
 		(function(){
 			var errors = [];
-			lastOpened && lastOpened.forEach(function(filePath){
+			settings.lastOpened && settings.lastOpened.forEach(function(filePath){
 				try{
-					editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
+					editor.tabOpen(getEditorPane(), filePath,fs.readFileSync(filePath).toString());
 				} catch(e) {
 					errors.push(filePath);
 				}
 			});
 			if (errors.length) {
-				lastOpened = lastOpened.filter(function(filePath){
+				settings.lastOpened = settings.lastOpened.filter(function(filePath){
 					return !~errors.indexOf(filePath);
 				});
-				localStorage.setItem('settings.opened', JSON.stringify(lastOpened));
+				core.emit('settings.save');
 				window.alert('Some files were not found:\n\t- ' + errors.join('\n\t- '));
 			}
 		})();
@@ -318,12 +259,12 @@
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
 			if (fs.existsSync(arg)) {
-				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
+				editor.tabOpen(getEditorPane(), fs.realpathSync(arg), fs.readFileSync(arg).toString());
 			}
 		})
 
 		// if no file opened open a new one
-		$('#tabs > div').length || core.emit('menu.file.new');
+		$('#tabs > div').length || core.emit('file.new');
 
 
 		//-- avoid quiting with dirty files

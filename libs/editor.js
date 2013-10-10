@@ -2,18 +2,13 @@ var core = require('./core.js')
 	, editorNextId = 0
 	, fileNameExp = /^(?:.*?[\/\\])?([^\/\\]+)$/
 	, listCaptureExp = /^(\s*)((?:[-*+]|\d+\.) )(.*)$/
+	, activeEditor
 ;
 
-
-function setFilePath(filePath){
-	this.filePath = filePath || '';
-	this.fileName = filePath ? this.filePath.replace(fileNameExp, '$1') : 'New File';
-}
-
-function Editor(filePath, content){
+function Editor(domElmt, filePath, content){
 	var self = this;
 	self.editorId = editorNextId++;
-	self.el = $('<div id="content-' + self.editorId + '"></div>');
+	self.el = domElmt;
 	setFilePath.call(this, filePath);
 	self.content = content;
 	self.active = false;
@@ -56,25 +51,83 @@ function Editor(filePath, content){
 	core.emit('editor.ready', self);
 }
 
+
+function setFilePath(filePath){
+	this.filePath = filePath || '';
+	this.fileName = filePath ? this.filePath.replace(fileNameExp, '$1') : 'New File';
+}
 Editor.prototype.changePath = function(newPath){
 	setFilePath.call(this, newPath);
 	core.emit('editor.filepath.changed', this, newPath);
+	return this;
 }
 
-core.on('menu.settings.theme-editor',function(theme){
-	CodeMirror.defaults.theme = theme;
+Editor.prototype.isDirty = function(){ return !! this.editor.isClean(); }
+Editor.prototype.markClean = function(){ ! this.editor.markClean(); return this;}
+
+//-- activeEditor tracking
+core.on('activeEditor.set', function(editor){
+	activeEditor = editor;
+	core.emit('preview.update', editor ? editor.editor.getValue() : '');
 });
 
+core.on('activeEditor.get', function(cb){
+	cb( activeEditor );
+});
+
+//-- edit menu binding
+function replaceActiveSelection(replaceCb){
+	if(! activeEditor ){
+		return;
+	}
+	var sel = activeEditor.editor.getSelection();
+	sel && activeEditor.editor.replaceSelection(replaceCb(sel));
+}
+core.on('editor.toggleBold', function(){
+	replaceActiveSelection(function(sel){
+		if( sel.match(/^(__|\*\*)[\s\S]+(\1)$/) ){ // remove
+			return sel.replace(/^(__|\*\*)([\s\S]+)(\1)$/g,'$2');
+		}
+		return '**' + sel + '**';
+	});
+});
+core.on('editor.toggleItalic', function(){
+	replaceActiveSelection(function(sel){
+		if( sel.match(/^(_|\*)[\s\S]+(\1)$/) ){
+			return sel.replace(/^(_|\*)([\s\S]+)(\1)$/g,'$2');
+		}
+		return '_' + sel + '_';
+	});
+});
+core.on('editor.indent',function(){
+	activeEditor && CodeMirror.commands.indentMore(activeEditor.editor);
+});
+core.on('editor.outdent',function(){
+	activeEditor && CodeMirror.commands.indentLess(activeEditor.editor);
+});
+core.on('editor.setTheme',function(theme){
+   editor.setEditorsOption('theme', theme);
+	core.emit('settings.set','theme-editor', theme);
+});
+
+//-- module exposure
 module.exports = {
-	tabNew: function(){
-		return new Editor();
-	},
-	tabOpen: function(filePath, content){
-		return new Editor(filePath, content);
-	},
-	cmApplyAll: function(cb){
+	tabNew: function(domElmt){
+		return new Editor(domElmt);
+	}
+	, tabOpen: function(domElmt, filePath, content){
+		return new Editor(domElmt, filePath, content);
+	}
+	, cmApplyAll: function(cb){
 		$('#editors .CodeMirror').each(function(){
 			cb(this.CodeMirror);
+		});
+	}
+	, getActive: function(){ return activeEditor; }
+	, setEditorsOption: function(option, value){
+		CodeMirror.defaults[option] = value;
+		$('.CodeMirror').each(function(){
+			this.CodeMirror && this.CodeMirror.setOption(option, value);
 		});
 	}
 };

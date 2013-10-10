@@ -84,39 +84,38 @@
 		, fs = require('fs')
 		, appMenu = new gui.Menu({type:'menubar'})
 	;
-	require('./filemanager.js');
 
 	//-- FILE MENU
 	appMenu.append(subMenuItem('_file')
-		.append('_new', function(){ core.emit('menu.file.new') })
-		.append('_open', function(){ core.emit('menu.file.open') })
+		.append('_new', function(){ core.emit('file.new') })
+		.append('_open', function(){ core.emit('file.open') })
 		.appendSeparator()
-		.append('_save', function(){ core.emit('menu.file.save') })
-		.append('save as (Ctrl+Shift+s)', function(){ core.emit('menu.file.saveas') })
+		.append('_save', function(){ core.emit('file.save') })
+		.append('save as (Ctrl+Shift+s)', function(){ core.emit('file.saveas') })
 		.appendSeparator()
-		.append('close (Ctrl+w)', function(){ core.emit('menu.file.close'); })
+		.append('close (Ctrl+w)', function(){ core.emit('file.close'); })
 		.append('_quit', function(){ core.emit('application.close'); })
 	);
 
 	//-- EDIT MENU
 	appMenu.append(subMenuItem('edit')
-		.append('_bold',function(){ core.emit('menu.edit.bold'); })
-		.append('_italic',function(){ core.emit('menu.edit.italic'); })
-		//- .appendSeparator()
-		//- .append('ordered list',function(){ core.emit('menu.edit.orderedlist'); })
-		//- .append('unordered list',function(){ core.emit('menu.edit.unorderedlist'); })
-		//- .append('indent',function(){ core.emit('menu.edit.indent'); })
-		//- .append('outdent',function(){ core.emit('menu.edit.outdent');})
+		.append('_bold',function(){ core.emit('editor.toggleBold'); })
+		.append('_italic',function(){ core.emit('editor.toggleItalic'); })
+		.appendSeparator()
+		//- .append('ordered list',function(){ core.emit('edit.orderedlist'); })
+		//- .append('unordered list',function(){ core.emit('edit.unorderedlist'); })
+		.append('indent',function(){ core.emit('editor.indent'); })
+		.append('outdent',function(){ core.emit('editor.outdent');})
 	);
 
 	//-- VIEW MENU
 	appMenu.append(subMenuItem('view')
-		.append('next tab (Ctrl+PAGE_DOWN)', function(){ core.emit('menu.view.tab-next');})
-		.append('previous tab (Ctrl+PAGE_UP)', function(){ core.emit('menu.view.tab-prev');})
+		.append('next tab (Ctrl+PAGE_DOWN)', function(){ core.emit('view.tab-next');})
+		.append('previous tab (Ctrl+PAGE_UP)', function(){ core.emit('view.tab-prev');})
 		.appendSeparator()
-		.append('toggle application fullscreen (F11)',function(){ core.emit('menu.view.fullscreen'); })
-		.append('toggle editor pane _fullscreen',function(){ core.emit('menu.view.fullscreen-editor'); })
-		.append('toggle _preview pane fullscreen',function(){ core.emit('menu.view.fullscreen-preview'); })
+		.append('toggle application fullscreen (F11)',function(){ core.emit('view.fullscreen'); })
+		.append('toggle editor pane _fullscreen',function(){ core.emit('view.fullscreen-editor'); })
+		.append('toggle _preview pane fullscreen',function(){ core.emit('view.fullscreen-preview'); })
 	);
 
 	//-- SETTINGS
@@ -126,15 +125,15 @@
 			type:'checkbox'
 			, click:function(){
 				if( this.checked ){
-					core.emit('menu.settings.wrapon');
+					core.emit('settings.wrapon');
 				} else {
-					core.emit('menu.settings.wrapoff');
+					core.emit('settings.wrapoff');
 				}
 			}
 			, checked: !! global.settings.wrapmode
 		})
-		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('menu.settings.font-increment'); })
-		.append('increase font size (Ctrl+Numpad_subtract)', function(){ core.emit('menu.settings.font-decrement'); })
+		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
+		.append('increase font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
 		.append(editorThemeSubMenu)
 	);
@@ -145,7 +144,7 @@
 			editorThemeSubMenu.append(
 				theme = theme.replace(/.css$/,''),
 				function(){
-					core.emit('menu.settings.theme-editor', theme);
+					core.emit('editor.setTheme', theme);
 				}
 			)
 		});
