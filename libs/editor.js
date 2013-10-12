@@ -5,15 +5,22 @@ var core = require('./core.js')
 	, activeEditor
 ;
 
-function Editor(domElmt, filePath, content){
+function Editor(filePath, content){
 	var self = this;
 	self.editorId = editorNextId++;
-	self.el = domElmt;
-	setFilePath.call(this, filePath);
+	setFilePath(this, filePath);
 	self.content = content;
 	self.active = false;
+	self.el = undefined;
+	self.editor = undefined;
+	self.initialized = false;
+	core.emit('editor.ready', self);
+}
+
+function initEditor(self, domElmt){
+	self.el = $(domElmt).prop('id', 'content-' + self.editorId);
 	self.editor = CodeMirror(self.el[0], {
-		value: content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
+		value: self.content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
 		, mode: "markdown"
 		, indentWithTabs: true
 		, lineNumbers: true
@@ -48,16 +55,23 @@ function Editor(domElmt, filePath, content){
 	self.editor.on('change',function(editor){
 		core.emit('editor.change', self, editor.getValue());
 	});
-	core.emit('editor.ready', self);
+	self.initialized = true;
+	core.emit('editor.initialized', self, self.editor.getValue());
+}
+Editor.prototype.init = function(domElmt){
+	if( this.initialized ){
+		throw "Editor already initialized";
+	}
+	initEditor(this,domElmt);
 }
 
 
-function setFilePath(filePath){
-	this.filePath = filePath || '';
-	this.fileName = filePath ? this.filePath.replace(fileNameExp, '$1') : 'New File';
+function setFilePath(self, filePath){
+	self.filePath = filePath || '';
+	self.fileName = filePath ? self.filePath.replace(fileNameExp, '$1') : 'New File';
 }
 Editor.prototype.changePath = function(newPath){
-	setFilePath.call(this, newPath);
+	setFilePath(this, newPath);
 	core.emit('editor.filepath.changed', this, newPath);
 	return this;
 }
@@ -112,11 +126,11 @@ core.on('editor.setTheme',function(theme){
 
 //-- module exposure
 module.exports = {
-	tabNew: function(domElmt){
-		return new Editor(domElmt);
+	tabNew: function(){
+		return new Editor();
 	}
-	, tabOpen: function(domElmt, filePath, content){
-		return new Editor(domElmt, filePath, content);
+	, tabOpen: function(filePath, content){
+		return new Editor(filePath, content);
 	}
 	, cmApplyAll: function(cb){
 		$('#editors .CodeMirror').each(function(){

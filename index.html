@@ -25,6 +25,10 @@
 	<script>
 	(function(){
 
+		// prevent default behavior from changing page on dropped file
+		window.ondragover = function(e) { e.preventDefault(); return false };
+		window.ondrop = function(e) { e.preventDefault(); return false };
+
 		//-- exposing some global to modules
 		global.$ = jQuery;
 		global.CodeMirror = CodeMirror;
@@ -102,15 +106,15 @@
 
 		//-- editors ui bindings
 		core.on('editor.ready', function(editor){
-			// create a tab related to the editor
-			var tab = $('<div id="tab-' + editor.editorId + '" title="' + editor.filePath + '"><span class="filename">' + editor.fileName + '</span><span class="close"> X </span></div>')
-				.appendTo("#tabs")
-				.on('click', function(){core.emit('editor.selected', editor);})
+			// create a tab and pane related to the editor
+			var tabTemplate = '<div id="tab-' + editor.editorId + '" title="' + editor.filePath + '"><span class="filename">' + editor.fileName + '</span><span class="close"> X </span></div>'
+				, paneTemplate = '<div></div>'
+				, tab = $(tabTemplate).appendTo("#tabs")
+				, pane = $(paneTemplate).appendTo("#editors")
 			;
-			tab.find('.close')
-				.on('click',function(){ core.emit('editor.close', editor)})
-			;
-			editor.el.appendTo("#editors");
+			tab.on('click', function(){core.emit('editor.selected', editor);});
+			$('.close', tab).on('click',function(){ core.emit('editor.close', editor)});
+			editor.init(pane);
 			tab.click();
 		});
 		core.on('editor.filepath.changed', function(editor, newpath){
@@ -235,15 +239,13 @@
 
 
 		//-- restore last opened files if any
-		function getEditorPane(){
-			return $('<div id="content-' + self.editorId + '"></div>');
-		}
 		(function(){
 			var errors = [];
 			settings.lastOpened && settings.lastOpened.forEach(function(filePath){
 				try{
-					editor.tabOpen(getEditorPane(), filePath,fs.readFileSync(filePath).toString());
+					editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
 				} catch(e) {
+					console.log(e);
 					errors.push(filePath);
 				}
 			});
@@ -259,7 +261,7 @@
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
 			if (fs.existsSync(arg)) {
-				editor.tabOpen(getEditorPane(), fs.realpathSync(arg), fs.readFileSync(arg).toString());
+				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
 			}
 		})
 
@@ -298,6 +300,18 @@
 			core.emit('editor.scroll');
 		}, true);
 
+		//-- allow dropping file
+		document.body.addEventListener('drop', function (e) {
+			var i = 0, l = e.dataTransfer.files.length, filePath;
+			if( l ){
+			  e.preventDefault();
+			  for(; i < l; i++) {
+				filePath = e.dataTransfer.files[i].path;
+				filePath.match(/\.(te?xt|markdown|md)$/i)  && core.emit('file.opened', filePath);
+			  }
+			  return false;
+		   }
+		}, true);
 
 	})();
 	</script>
