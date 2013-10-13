@@ -1,5 +1,4 @@
 var core = require('./core.js')
-	, settings = global.settings
 	, initialized = false
 ;
 
@@ -21,17 +20,17 @@ core.on('settings.get', function(cb){
 
 
 core.on('settings.font-increment', function(){
-	if (settings.fontSize < 51) {
-		settings.fontSize++;
+	if ( global.settings.fontSize < 51) {
+		global.settings.fontSize++;
 		core.emit('settings.save');
-		core.emit('font-size.change', settings.fontSize);
+		core.emit('font-size.change', global.settings.fontSize);
 	}
 });
 core.on('settings.font-decrement', function(){
-	if (settings.fontSize > 6) {
-		settings.fontSize--;
+	if (global.settings.fontSize > 6) {
+		global.settings.fontSize--;
 		core.emit('settings.save');
-		core.emit('font-size.change', settings.fontSize);
+		core.emit('font-size.change', global.settings.fontSize);
 	}
 });
 
@@ -39,13 +38,13 @@ core.on('settings.font-decrement', function(){
 
 
 function restoreSettings(){
-	// restore settings
-	core.emit('settings.theme-editor', settings.editorTheme);
-	core.emit('font-size.change', settings.fontSize);
-}
-module.exports = {
-	initialize: function(){
-		restoreSettings();
-		(initialized = true);
+	if( initialized ){
+		return;
 	}
-};
+	initialized = true;
+	// restore settings
+	core.emit('editor.setTheme', global.settings.editorTheme);
+	core.emit('font-size.change', global.settings.fontSize);
+}
+
+core.on('application.ready', restoreSettings);

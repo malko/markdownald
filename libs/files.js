@@ -41,3 +41,23 @@ core.on('file.save', function(){
 core.on('file.close', function(){
 	core.emit('editor.close', editor.getActive());
 });
+
+//-- restore files from previous session
+core.on('application.ready', function(){
+	var errors = [];
+	global.settings.lastOpened && global.settings.lastOpened.forEach(function(filePath){
+		try{
+			editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
+		} catch(e) {
+			console.log(e, e.stack);
+			errors.push(filePath);
+		}
+	});
+	if (errors.length) {
+		global.settings.lastOpened = global.settings.lastOpened.filter(function(filePath){
+			return !~errors.indexOf(filePath);
+		});
+		core.emit('settings.save');
+		window.alert('Some files were not found:\n\t- ' + errors.join('\n\t- '));
+	}
+})

@@ -133,7 +133,7 @@
 			, checked: !! global.settings.wrapmode
 		})
 		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
-		.append('increase font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
+		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
 		.append(editorThemeSubMenu)
 	);
@@ -145,6 +145,7 @@
 				theme = theme.replace(/.css$/,''),
 				function(){
 					core.emit('editor.setTheme', theme);
+					core.emit('settings.set','editorTheme',theme);
 				}
 			)
 		});

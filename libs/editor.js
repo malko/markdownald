@@ -25,6 +25,7 @@ function initEditor(self, domElmt){
 		, indentWithTabs: true
 		, lineNumbers: true
 		, lineWrapping: !!global.settings.wrapmode
+		, theme: global.settings.editorTheme
 		, extraKeys:{
 			'Tab':function(cm){ CodeMirror.commands["indentMore"](cm); }
 			, 'Shift-Tab':function(cm){ CodeMirror.commands["indentLess"](cm); }
@@ -119,9 +120,16 @@ core.on('editor.indent',function(){
 core.on('editor.outdent',function(){
 	activeEditor && CodeMirror.commands.indentLess(activeEditor.editor);
 });
+
+function setEditorsOption(option, value){
+	CodeMirror.defaults[option] = value;
+	$('.CodeMirror').each(function(){
+		this.CodeMirror && this.CodeMirror.setOption(option, value);
+	});
+}
+
 core.on('editor.setTheme',function(theme){
-   editor.setEditorsOption('theme', theme);
-	core.emit('settings.set','theme-editor', theme);
+	setEditorsOption('theme', theme);
 });
 
 //-- module exposure
@@ -138,10 +146,5 @@ module.exports = {
 		});
 	}
 	, getActive: function(){ return activeEditor; }
-	, setEditorsOption: function(option, value){
-		CodeMirror.defaults[option] = value;
-		$('.CodeMirror').each(function(){
-			this.CodeMirror && this.CodeMirror.setOption(option, value);
-		});
-	}
+	, setEditorsOption: setEditorsOption
 };

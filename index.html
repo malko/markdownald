@@ -9,7 +9,7 @@
 	<link href="node_modules/codemirror/theme/ambiance.css" type="text/css" rel="stylesheet" />
 	<link href="css/highlightjs/zenburn.css" type="text/css" rel="stylesheet" />
 	<link href="css/markdown/markdowncss-dark.css" type="text/css" rel="stylesheet" />
-
+	
 	<script src="libs/winsize.js"></script>
 	<script src="libs/jquery-1.10.2.js"></script>
 	<script src="node_modules/codemirror/lib/codemirror.js"></script>
@@ -21,7 +21,7 @@
 	<input type="file" id="fileopen" style="display:none" accept=".markdow,.md,.txt" multiple>
 	<input type="file" id="filesaveas" style="display:none" nwsaveas />
 	<div id="tabs"></div>
-	<div id=panes><div id="editors"></div><div id="preview"><div class="content"></div></div></div>
+	<div id=panes><div id="editors"></div><div id="preview"><article class="content"></article></div></div>
 	<script>
 	(function(){
 
@@ -34,13 +34,17 @@
 		global.CodeMirror = CodeMirror;
 
 		//--- application settings
-		var settings = global.settings = JSON.parse(localStorage.getItem('settings')) || {
-			recentFiles: []
-			, lastOpened: []
-			, fontSize: 16
-			, maxRecentFileSize: 10
-			, editorTheme: 'ambiance'
-		};
+		global.settings = $.extend(
+			{ }
+			, {
+				recentFiles: []
+				, lastOpened: []
+				, fontSize: 16
+				, maxRecentFileSize: 10
+				, editorTheme: 'ambiance'
+			}
+			, JSON.parse(localStorage.getItem('settings')) || {}
+		);
 
 		//--- setting app menu
 		global.gui = require('nw.gui');
@@ -54,6 +58,7 @@
 			, preview = require('./libs/preview.js')
 		;
 		require('./libs/shortcuts.js');
+		require('./libs/settings.js');
 		require('./libs/files.js');
 
 		//-- storage exposition
@@ -74,7 +79,6 @@
 				core.emit('file.opened',this.files[i].path);
 			}
 		});
-
 		$('#filesaveas').on('change', function(){
 			if(! this.files.length ){
 				return;
@@ -120,12 +124,12 @@
 		core.on('editor.filepath.changed', function(editor, newpath){
 			var tab = $('#tabs #tab-' + editor.editorId)
 				, oldPath = tab.attr('title')
-				, lastOpenId = oldPath ? settings.lastOpened.indexOf(oldPath) : -1
+				, lastOpenId = oldPath ? global.settings.lastOpened.indexOf(oldPath) : -1
 			;
 			if( lastOpenId < 0){
-				settings.lastOpened.push(newpath);
+				global.settings.lastOpened.push(newpath);
 			} else {
-				settings.lastOpened.splice(lastOpenId,1, newpath);
+				global.settings.lastOpened.splice(lastOpenId,1, newpath);
 			}
 			core.emit('settings.save');
 			$('#tabs #tab-' + editor.editorId).attr('title',newpath)
@@ -138,9 +142,9 @@
 				return;
 			}
 			//-- remove from opened file list
-			var lastOpenId = settings.lastOpened.indexOf(editorInstance.filePath);
+			var lastOpenId = global.settings.lastOpened.indexOf(editorInstance.filePath);
 			if( lastOpenId >= 0 ){
-				settings.lastOpened.splice(lastOpenId,1);
+				global.settings.lastOpened.splice(lastOpenId,1);
 				core.emit('settings.save');
 			}
 			// get next selected editorInstance if available before removing this one
@@ -217,46 +221,18 @@
 			localStorage.setItem('settings', JSON.stringify(global.settings));
 		});
 
-		
+
 		core.on('font-size.change',function(size){
 			$('body').css('fontSize', size + 'px');
 			var editor = $('.CodeMirror:visible');
 			editor.length && editor.get(0).CodeMirror.refresh();
 		});
-
-
-		 core.on('editor.setTheme',function(theme){
+		core.on('editor.setTheme',function(theme){
 			 var head = $('head');
 			 if( ! head.find('link[href$="' + theme + '.css"]').length ){
 				 head.append('<link href="node_modules/codemirror/theme/' + theme + '.css" type="text/css" rel="stylesheet" />');
 			 }
-			 core.emit('settings.set','theme-editor', theme);
 		 });
-		// restore settings
-		core.emit('settings.theme-editor', settings.editorTheme);
-		core.emit('font-size.change', settings.fontSize);
-
-
-
-		//-- restore last opened files if any
-		(function(){
-			var errors = [];
-			settings.lastOpened && settings.lastOpened.forEach(function(filePath){
-				try{
-					editor.tabOpen(filePath,fs.readFileSync(filePath).toString());
-				} catch(e) {
-					console.log(e);
-					errors.push(filePath);
-				}
-			});
-			if (errors.length) {
-				settings.lastOpened = settings.lastOpened.filter(function(filePath){
-					return !~errors.indexOf(filePath);
-				});
-				core.emit('settings.save');
-				window.alert('Some files were not found:\n\t- ' + errors.join('\n\t- '));
-			}
-		})();
 
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
@@ -264,10 +240,6 @@
 				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
 			}
 		})
-
-		// if no file opened open a new one
-		$('#tabs > div').length || core.emit('file.new');
-
 
 		//-- avoid quiting with dirty files
 		global.gui.Window.get().on('close', function(){
@@ -312,6 +284,11 @@
 			  return false;
 		   }
 		}, true);
+
+		//-- finally tell the world we are ready and new file if none is already opened
+		core.emit('application.ready');
+		// if no file opened open a new one
+		$('#tabs > div').length || core.emit('file.new');
 
 	})();
 	</script>
