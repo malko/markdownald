@@ -119,7 +119,11 @@
 	);
 
 	//-- SETTINGS
-	var editorThemeSubMenu = subMenuItem('Editor theme');
+	var editorThemeSubMenu = subMenuItem('Editor theme')
+		, windowThemeSubMenu = subMenuItem('Application theme')
+		, previewThemeSubMenu = subMenuItem('Preview theme')
+		, previewCodeThemeSubMenu = subMenuItem('highlighted code theme')
+	;
 	appMenu.append(subMenuItem('settings')
 		.append('_wrap long lines',{
 			type:'checkbox'
@@ -135,22 +139,65 @@
 		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
 		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
-		.append(editorThemeSubMenu)
+		.append(subMenuItem('themes')
+			.append(windowThemeSubMenu)
+			.append(editorThemeSubMenu)
+			.append(previewThemeSubMenu)
+			.append(previewCodeThemeSubMenu)
+		)
 	);
 
-	// get and append editor themes
-	fs.readdir('./node_modules/codemirror/theme', function(err, themes){
-		themes.forEach(function(theme){
-			editorThemeSubMenu.append(
-				theme = theme.replace(/.css$/,''),
-				function(){
-					core.emit('editor.setTheme', theme);
-					core.emit('settings.set','editorTheme',theme);
-				}
-			)
+	// get and append themes
+	function appendTheme(submenuItem, themesPath, cb){
+		fs.readdir(themesPath, function(err, themes){
+			themes.forEach(function(theme){
+				theme.match(/\.css$/) && submenuItem.append(
+					theme = theme.replace(/.css$/,''),
+					function(){ cb(theme); }
+				)
+			});
 		});
-	});
-
+	}
+	appendTheme(
+		windowThemeSubMenu
+		, './css/'
+		, function(theme){
+			core.emit('application.setTheme', theme);
+			core.emit('settings.set','applicationTheme',theme);
+		}
+	);
+	appendTheme(
+		editorThemeSubMenu
+		, './node_modules/codemirror/theme'
+		, function(theme){
+			core.emit('editor.setTheme', theme);
+			core.emit('settings.set','editorTheme',theme);
+		}
+	);
+	appendTheme(
+		previewThemeSubMenu
+		, './css/markdown'
+		, function(theme){
+			core.emit('preview.setTheme', theme);
+			core.emit('settings.set','previewTheme',theme);
+		}
+	);
+	appendTheme(
+		previewCodeThemeSubMenu
+		, './css/highlightjs'
+		, function(theme){
+			core.emit('preview.setCodeTheme', theme);
+			core.emit('settings.set','previewCodeTheme',theme);
+		}
+	);
+	var helpMenu = subMenuItem('?');
+	appMenu.append(helpMenu
+		.append('about', function(){
+			global.window.alert('Markdownald the markdown editor\nUnder MIT alike license by Jonathan Gotti');
+		})
+	);
+	//- ~global.gui.App.argv.indexOf('--dev') &&
+	helpMenu.append('show devtools', function(){ global.gui.Window.get().showDevTools(); });
 
 
 	// finally add the menu to the window

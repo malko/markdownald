@@ -4,11 +4,11 @@
 	<title>Markdownald</title>
 	<meta charset="UTF8" />
 
-	<link rel="stylesheet" type="text/css" href="css/main.css" />
+	<link href="" type="text/css" rel="stylesheet" id="applicationTheme" />
+	<link href="" type="text/css" rel="stylesheet" id="previewCodeTheme"/>
+	<link href="" type="text/css" rel="stylesheet"  id="previewTheme" />
 	<link rel=stylesheet href="node_modules/codemirror/lib/codemirror.css">
 	<link href="node_modules/codemirror/theme/ambiance.css" type="text/css" rel="stylesheet" />
-	<link href="css/highlightjs/zenburn.css" type="text/css" rel="stylesheet" />
-	<link href="css/markdown/markdowncss-dark.css" type="text/css" rel="stylesheet" />
 	
 	<script src="libs/winsize.js"></script>
 	<script src="libs/jquery-1.10.2.js"></script>
@@ -41,25 +41,28 @@
 				, lastOpened: []
 				, fontSize: 16
 				, maxRecentFileSize: 10
+				, windowTheme: 'default'
 				, editorTheme: 'ambiance'
+				, previewTheme: 'mardownald-dark'
+				, previewCodeTheme: 'zenburn'
 			}
 			, JSON.parse(localStorage.getItem('settings')) || {}
 		);
 
 		//--- setting app menu
 		global.gui = require('nw.gui');
-		var appMenu = require('./libs/app-menu.js');
+		require('./libs/app-menu.js');
 		//-- open devtools when in devmode
 		~global.gui.App.argv.indexOf('--dev') && global.gui.Window.get().showDevTools();
 
 		var core = require('./libs/core.js')
 			, fs = require('fs')
 			, editor = require('./libs/editor.js')
-			, preview = require('./libs/preview.js')
 		;
+		require('./libs/preview.js');
 		require('./libs/shortcuts.js');
-		require('./libs/settings.js');
 		require('./libs/files.js');
+		require('./libs/settings.js');
 
 		//-- storage exposition
 		core.on('storage.set', function(key, val){
@@ -227,12 +230,21 @@
 			var editor = $('.CodeMirror:visible');
 			editor.length && editor.get(0).CodeMirror.refresh();
 		});
+		core.on('application.setTheme', function(theme){
+			$('head link#applicationTheme').attr('href','./css/' + theme + '.css');
+		});
 		core.on('editor.setTheme',function(theme){
 			 var head = $('head');
 			 if( ! head.find('link[href$="' + theme + '.css"]').length ){
 				 head.append('<link href="node_modules/codemirror/theme/' + theme + '.css" type="text/css" rel="stylesheet" />');
 			 }
-		 });
+		});
+		core.on('preview.setTheme', function(theme){
+			$('head link#previewTheme').attr('href','./css/markdown/' + theme + '.css');
+		});
+		core.on('preview.setCodeTheme', function(theme){
+			$('head link#previewCodeTheme').attr('href','./css/highlightjs/' + theme + '.css');
+		});
 
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){

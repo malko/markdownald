@@ -17,8 +17,7 @@ core.on('settings.get', function(cb){
 	});
 });
 
-
-
+//-- font settings
 core.on('settings.font-increment', function(){
 	if ( global.settings.fontSize < 51) {
 		global.settings.fontSize++;
@@ -34,17 +33,16 @@ core.on('settings.font-decrement', function(){
 	}
 });
 
-
-
-
-function restoreSettings(){
+//-- restore settings on startup
+core.on('application.ready', function restoreSettings(){
 	if( initialized ){
 		return;
 	}
 	initialized = true;
 	// restore settings
+	core.emit('application.setTheme', global.settings.applicationTheme);
 	core.emit('editor.setTheme', global.settings.editorTheme);
+	core.emit('preview.setTheme', global.settings.previewTheme);
+	core.emit('preview.setCodeTheme', global.settings.previewCodeTheme);
 	core.emit('font-size.change', global.settings.fontSize);
-}
-
-core.on('application.ready', restoreSettings);
+});
