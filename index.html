@@ -18,13 +18,12 @@
 
 </head>
 <body>
-	<input type="file" id="fileopen" style="display:none" accept=".markdow,.md,.txt" multiple>
-	<input type="file" id="filesaveas" style="display:none" nwsaveas />
 	<div id="tabs"></div>
 	<div id=panes><div id="editors"></div><div id="preview"><article class="content"></article></div></div>
 	<script>
 	(function(){
-
+		/*jshint browser:true*/
+		/*global jQuery, $, CodeMirror, global, require*/
 		// prevent default behavior from changing page on dropped file
 		window.ondragover = function(e) { e.preventDefault(); return false };
 		window.ondrop = function(e) { e.preventDefault(); return false };
@@ -72,32 +71,17 @@
 			cb && cb(JSON.parse(localStorage.setItem(key)));
 		});
 
-		//-- bind hidden file input elements
-		$('input#fileopen').on('change',function(){
-			var i=0, l=this.files.length;
-			if( !this.files.length ){
-				return;
-			}
-			for(; i<l; i++){
-				core.emit('file.opened',this.files[i].path);
-			}
-		});
-		$('#filesaveas').on('change', function(){
-			if(! this.files.length ){
-				return;
-			}
-			editor.getActive().changePath(this.files[0].path);
-			core.emit('file.save');
-		});
-
-
-
-
 		//-- bind editor to preview
+		var waitingForPreviewUpdate=false;
 		core.on('editor.change', function(editor, content){
 			var tab = $('#tab-' + editor.editorId);
 			tab[editor.editor.isClean() ? 'removeClass' : 'addClass']('dirty');
-			core.emit('preview.update', content);
+			waitingForPreviewUpdate && clearTimeout(waitingForPreviewUpdate)
+			waitingForPreviewUpdate = setTimeout(function(){
+				waitingForPreviewUpdate = false;
+				core.emit('preview.update', editor.editor.getValue());
+			}, 400);
+
 		});
 		core.on('editor.selected', function(editor){
 			core.emit('activeEditor.set', editor);
@@ -108,6 +92,11 @@
 			core.emit('preview.update', editor.editor.getValue());
 			editor.editor.refresh();
 			$(window).trigger('resize');
+		});
+		core.on('editor.diskchange', function(editor, event, fileName){
+			if (event === 'change' && fileName){
+				confirm(editor.filePath + ' has changed\nDo you want to reload from disk') && core.emit('editor.reload', editor.filePath);
+			}
 		});
 
 
@@ -162,23 +151,6 @@
 			editorInstance.el.remove();
 		});
 
-
-		//-- menu shortcuts binding
-		/*
-		core.on('edit.orderedlist',function(){
-			if(! activeEditor){
-				return;
-			}
-			var cm = activeEditor.editor;
-			if(cm.somethingSelected() ){
-				cm.replaceSelection(cm.getSelection().replace(/^(\s*)/mg,'$11. '));
-			} else {
-
-			}
-			//CodeMirror.commands.indentMore(activeEditor.editor);
-		});*/
-
-
 		//-- menu view binding
 		function togglePaneFullScreen(paneId){
 			var pane = $('#' + paneId)
@@ -193,8 +165,8 @@
 		}
 		function goTabNextPrev(nextOrPrev){
 			var tabs = $('#tabs > div[id^=tab]')
-				tab = tabs.filter('.active')
-				next = tab[nextOrPrev]('div[id^=tab]')
+				, tab = tabs.filter('.active')
+				, next = tab[nextOrPrev]('div[id^=tab]')
 			;
 			next.length || (next = tabs.get(nextOrPrev === 'next' ? 0 : tabs.length - 1));
 			next.click();
@@ -266,16 +238,18 @@
 			}
 		});
 
-		//-- bind scrollbars togethers
+		/*/-- bind scrollbars togethers
 		core.on('editor.scroll', function(){
-			var editorScroll = $('.CodeMirror-vscrollbar:visible')
+			var editorScroll = $('#editors .active .CodeMirror-vscrollbar')
 				, preview = $('#preview')
-				, eh = editorScroll.children().height()
-				, ph = preview.find(' > .content').height()
+				, eh = editorScroll.find('> div').outerHeight(true)
+				, et = editorScroll.scrollTop()
+				, ph = preview.find(' > article').outerHeight(true)
 				, ratio =  ph / eh
+				, pt = Math.round( editorScroll.scrollTop() * ratio)
 			;
-			preview.scrollTop( Math.round(ratio * editorScroll.scrollTop()) );
-		})
+			preview.scrollTop( pt );
+		})*/
 		core.on('editor.change', function(){ core.emit('editor.scroll');})
 		document.addEventListener('scroll', function(e){
 			if ( ! $(e.target).is('.CodeMirror-vscrollbar:visible') ) {
