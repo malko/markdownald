@@ -5,6 +5,10 @@ var core = require('./core.js')
 	, processing = false
 ;
 
+
+preview.on('click', ':checkbox', function(){
+	return false;
+});
 marked.setOptions({
 	gfm: true
 	, highlight: function (code, lang) {
@@ -37,7 +41,12 @@ core.on('preview.update', function(md){
 		if (err){
 			console.log(err);
 		}
-		preview.html(content.replace(/<a /g,'<a target="_blank" '));
+		preview.html(
+			content.replace(/<a /g,'<a target="_blank" ')
+				.replace(/^<li>\[ \]/mg,'<li><input type="checkbox"/>')
+				.replace(/^<li>\[-\]/img,'<li><input type="checkbox" checked="checked" disabled/>')
+				.replace(/^<li>\[x\]/img,'<li><input type="checkbox" checked="checked"/>')
+		);
 		processing = false;
 	});
 })

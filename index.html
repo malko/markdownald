@@ -249,14 +249,14 @@
 				, pt = Math.round( editorScroll.scrollTop() * ratio)
 			;
 			preview.scrollTop( pt );
-		})*/
+		})* /
 		core.on('editor.change', function(){ core.emit('editor.scroll');})
 		document.addEventListener('scroll', function(e){
 			if ( ! $(e.target).is('.CodeMirror-vscrollbar:visible') ) {
 				return;
 			}
 			core.emit('editor.scroll');
-		}, true);
+		}, true);*/
 
 		//-- allow dropping file
 		document.body.addEventListener('drop', function (e) {
