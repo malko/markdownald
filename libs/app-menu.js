@@ -120,7 +120,7 @@
 		.append('previous tab (Ctrl+PAGE_UP)', function(){ core.emit('view.tab-prev');})
 		.appendSeparator()
 		.append('toggle application fullscreen (F11)',function(){ core.emit('view.fullscreen'); })
-		.append('(un)maximize editor pane (Ctrl+f)',function(){ core.emit('view.fullscreen-editor'); })
+		.append('(un)maximize editor pane (Ctrl+Shift+f)',function(){ core.emit('view.fullscreen-editor'); })
 		.append('(un)maximize preview pane (Ctrl+p)',function(){ core.emit('view.fullscreen-preview'); })
 	);
 

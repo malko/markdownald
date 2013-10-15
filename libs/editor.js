@@ -31,9 +31,19 @@ function initEditor(self, domElmt){
 		, lineWrapping: !!global.settings.wrapmode
 		, theme: global.settings.editorTheme
 		, extraKeys:{
-			'Tab':function(cm){ CodeMirror.commands["indentMore"](cm); }
-			, 'Shift-Tab':function(cm){ CodeMirror.commands["indentLess"](cm); }
-			, 'Enter':function(cm){
+			'Tab': function(cm){ CodeMirror.commands["indentMore"](cm); }
+			, 'Shift-Tab': function(cm){ CodeMirror.commands["indentLess"](cm); }
+			, 'F3': 'findNext'
+			, 'Shift-F3': 'findPrev'
+			, 'Esc': 'clearSearch'
+			, 'Ctrl-G': function(cm){
+				cm.openDialog('go to line <input type=number/>', function(l){
+					console.log(l);
+					l && cm.setCursor(+l-1,1);
+				});
+				//- var l = window.prompt('Go to line'); l && cm.setCursor(-1+l,0)
+			}
+			, 'Enter': function(cm){
 				if( cm.somethingSelected() ){
 					cm.replaceSelection('\n');
 					cm.setCursor(cm.getCursor("end"));
