@@ -36,15 +36,16 @@ $ ./markdownald/markdownald.sh
 - [x] add mode wrap to user settings
 - [-] better css for markdown rendering
   - [-] add some styles
-  - [ ] add a display for checkboxes as on github flavord markdown
+  - [x] add a display for checkboxes as on github flavord markdown
 - [x] allow users to change theme settings
   - [x] for editor
   - [x] font size
   - [x] for markdown
   - [x] for interface
   - [x] for highlighted code preview
+- [x] export generated output to html
+- [ ] export generated output to pdf 
 - [ ] integrate with github api to read and save directly from github
-- [ ] export generated output to html / pdf ...
 
 ### Built thanks to others open source projects
 - [node-webkit](https://github.com/rogerwang/node-webkit) as the foundation of the application
