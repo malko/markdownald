@@ -95,6 +95,8 @@
 		.append('_save', function(){ core.emit('file.save') })
 		.append('save as (Ctrl+Shift+s)', function(){ core.emit('file.saveas') })
 		.appendSeparator()
+		.append('export html', function(){ core.emit('file.html-export'); })
+		.appendSeparator()
 		.append('close (Ctrl+w)', function(){ core.emit('file.close'); })
 		.append('_quit', function(){ core.emit('application.close'); })
 	);

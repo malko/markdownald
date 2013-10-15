@@ -5,6 +5,7 @@ var core = require('./core.js')
 	, settings = global.settings
 	, inputOpen = $('<input type="file" id="fileopen" style="display:none" accept=".markdown,.md,.txt" multiple />').appendTo('body')
 	, inputSaveAs = $('<input type="file" id="filesaveas" style="display:none" nwsaveas />').appendTo('body')
+	, inputSaveAsHTML = $('<input type="file" id="exportAsHTML" style="display:none" nwsaveas="" />').appendTo('body')
 ;
 
 //-- bind hidden file input elements
@@ -20,6 +21,9 @@ inputOpen.on('change',function(){
 inputSaveAs.on('change', function(){
 	this.files.length && core.emit('file.save', this.files[0].path);
 });
+inputSaveAsHTML.on('change', function(){
+	this.files.length && core.emit('file.html-exported', this.files[0].path);
+})
 
 core.on('file.open', function(){
 	inputOpen.click();
@@ -52,6 +56,30 @@ core.on('file.save', function(filePath){
 	} else {
 		core.emit('editor.save', activeEditor, filePath);
 		$('#tab-' + activeEditor.editorId).removeClass('dirty');
+	}
+});
+core.on('file.html-export', function(){
+	inputSaveAsHTML.attr('nwsaveas', editor.getActive().fileName.replace(/\.[^.]+$/,'') + '.html').click();
+});
+core.on('file.html-exported', function(exportPath){
+		try{
+		var html = ['<!DOCTYPE html>\n<html>\n<head>\n\t<meta charset="utf-8">\n\t']
+			, title = $('#tabs .active').text().replace(/\.[^\.]+$/,'')
+			, content = $('#preview').html()
+			, previewTheme = $('link#previewTheme').attr('href')
+			, previewCodeTheme = $('link#previewCodeTheme').attr('href')
+			, hasCode = content.match(/<pre|code/)
+		;
+		html.push('<title>' + title + '</title>\n\t<style>\n');
+		html.push('#preview{ margin:0 auto; max-width:780px; box-shadow: 0 0 250px #000;}\n')
+		html.push('#preview, #preview>article{border-radius: 1em;}\n');
+		html.push(fs.readFileSync(previewTheme));
+		hasCode && html.push(fs.readFileSync(previewCodeTheme));
+		html.push('\n\t</style>\n</head>\n<body><div id="preview">');
+		html.push(content + '\n</div>\n<body>\n</html>');
+		fs.writeFileSync(exportPath, html.join(''), 'utf8');
+	} catch (e) {
+		window.alert('Error while exporting to html:\n' + e);
 	}
 });
 core.on('file.close', function(){
