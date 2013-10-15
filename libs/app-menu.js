@@ -204,12 +204,19 @@
 	);
 	var helpMenu = subMenuItem('?');
 	appMenu.append(helpMenu
+		.append('help on github', function(){
+			global.gui.Shell.openExternal('https://help.github.com/articles/github-flavored-markdown');
+		})
+		.append('Markdown syntax guide', function(){
+			global.gui.Shell.openExternal('http://daringfireball.net/projects/markdown/syntax');
+		})
+		.appendSeparator()
 		.append('about', function(){
 			global.window.alert('Markdownald the markdown editor\nUnder MIT alike license by Jonathan Gotti');
 		})
 	);
 	//- ~global.gui.App.argv.indexOf('--dev') &&
-	helpMenu.append('show devtools', function(){ global.gui.Window.get().showDevTools(); });
+	helpMenu.appendSeparator().append('show devtools', function(){ global.gui.Window.get().showDevTools(); });
 
 
 	// finally add the menu to the window
