@@ -3,8 +3,8 @@ body{background:#444;color:#fff;margin:0;height:100%;vertical-align:top}
 #tabs{position:absolute;top:5%;left:0;white-space:nowrap;overflow-Y:hidden;overflow-X:hidden;font-family:Arial;font-size:.9em;line-height:1.5em;height:2em;width:99%;z-index:10;margin:-1.5em .5% 0 .5%;}
 #tabs:hover{overflow-X:auto}
 #tabs:before{content:"";position:absolute;top:1.5em;display:block;border-bottom:solid #808080 1px;height:0;width:100%;z-index:1}
-#tabs div{display:inline-block;border:solid #808080 1px;border-bottom:none;border-radius:4px 4px 0 0;padding:0 1.55em 0 .25em;position:relative;margin:0 .5px;cursor:pointer;background:#363636;}
-#tabs div.active{background:#444;font-style:italic;z-index:1}
+#tabs div{display:inline-block;border:solid #808080 1px;border-bottom:none;border-radius:4px 4px 0 0;padding:0 1.55em 0 .25em;position:relative;margin:0 .5px;cursor:pointer;background:#363636;opacity:.6;}
+#tabs div.active{opacity:1;background:#444;font-style:italic;z-index:1}
 #tabs div .close{position:absolute;font-style:normal;top:50%;margin-top:-.5em;right:.25em;background:#d66;width:1.05em;height:1em;line-height:1em;text-align:center;border-radius:2px;visibility:hidden}
 #tabs div:hover .close{display:block;visibility:visible}
 #tabs div.dirty:after{content:"*";position:absolute}
