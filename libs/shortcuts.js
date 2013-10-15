@@ -13,9 +13,13 @@ var core = require('./core.js')
 		, END:35
 		, HOME:36
 		, LEFT:37
+		, "←":37
 		, UP:38
+		, "↑":38
 		, RIGHT:39
+		, "→":39
 		, DOWN:40
+		, "↓":40
 		, INSERT:45
 		, DELETE:46
 		, 0:48

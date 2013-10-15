@@ -19,15 +19,16 @@
 	}
 
 	// return a new menuItem args can be a single function
-	function menuItem(label, args, defaults){
+	function menuItem(label, args, defaults, additionalShortcuts){
 		(args instanceof Function) && (args = {click:args});
+		var i;
 
 		if( ! (args || defaults) ){
 			args={};
 		} else if (defaults && ! args){
 			args = defaults;
 		} else if (args && defaults){
-			for( var i in defaults ){
+			for( i in defaults ){
 				if(defaults.hasOwnProperty(i) && args[i] === undefined){
 					args[i] = defaults[i];
 				}
@@ -36,24 +37,24 @@
 
 		label && (args.label = label);
 
-		var item = new gui.MenuItem(args);
+		var item = new gui.MenuItem(args)
+			, click = function(){ item.click(); }
+		;
+		additionalShortcuts || (additionalShortcuts = []);
 		if( ~label.indexOf('_') && !~label.indexOf('(') ){
 			var key;
 			item.label = args.label && args.label.replace(/_(.)/,function(m,k){
 				key= ' (Ctrl+' + k + ')';
-				shortcuts.on('Ctrl+'+k, function(){
-					item.click();
-				})
+				shortcuts.on('Ctrl+'+k, click)
 				return k;
 			});
 			item.label += key || '';
 		} else {
 			label.replace(/ \(([^\)]+)\)$/, function(m,k){
-				shortcuts.on(k, function(){
-					item.click();
-				})
+				additionalShortcuts = additionalShortcuts.concat(k.split(/\s*,\s*/));
 			})
 		}
+		additionalShortcuts.forEach(function(k){ shortcuts.on(k, click); });
 		return item;
 
 	}
@@ -77,6 +78,7 @@
 				})
 			});
 		}*/
+
 		return item;
 	}
 
@@ -84,7 +86,7 @@
 		, fs = require('fs')
 		, appMenu = new gui.Menu({type:'menubar'})
 	;
-
+	
 	//-- FILE MENU
 	appMenu.append(subMenuItem('_file')
 		.append('_new', function(){ core.emit('file.new') })
