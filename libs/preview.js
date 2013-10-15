@@ -37,16 +37,21 @@ core.on('preview.update', function(md){
 		return;
 	}
 	processing = true;
-	marked(md, {}, function (err, content) {
-		if (err){
-			console.log(err);
-		}
-		preview.html(
-			content.replace(/<a /g,'<a target="_blank" ')
-				.replace(/^<li>\[ \]/mg,'<li><input type="checkbox"/>')
-				.replace(/^<li>\[-\]/img,'<li><input type="checkbox" checked="checked" disabled/>')
-				.replace(/^<li>\[x\]/img,'<li><input type="checkbox" checked="checked"/>')
-		);
+	try{
+		marked(md, {}, function (err, content) {
+			if (err){
+				console.log(err);
+			}
+			preview.html(
+				content.replace(/<a /g,'<a target="_blank" ')
+					.replace(/^<li>\[ \]/mg,'<li><input type="checkbox"/>')
+					.replace(/^<li>\[-\]/img,'<li><input type="checkbox" checked="checked" disabled/>')
+					.replace(/^<li>\[x\]/img,'<li><input type="checkbox" checked="checked"/>')
+			);
+			processing = false;
+		});
+	} catch (e){
+		window.alert('Error while comiling markdown:\n'+e);
 		processing = false;
-	});
+	}
 })
