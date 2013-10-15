@@ -25,7 +25,7 @@ function initEditor(self, domElmt){
 	self.el = global.$(domElmt).prop('id', 'content-' + self.editorId);
 	self.editor = global.CodeMirror(self.el[0], {
 		value: self.content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
-		, mode: "markdown"
+		, mode: "gfm"
 		, indentWithTabs: true
 		, lineNumbers: true
 		, lineWrapping: !!global.settings.wrapmode
