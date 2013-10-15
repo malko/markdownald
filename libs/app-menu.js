@@ -114,12 +114,14 @@
 
 	//-- VIEW MENU
 	appMenu.append(subMenuItem('view')
+		.append('refresh preview (Ctrl+r, F5)', function(){ core.emit('view.refresh-preview'); })
+		.appendSeparator()
 		.append('next tab (Ctrl+PAGE_DOWN)', function(){ core.emit('view.tab-next');})
 		.append('previous tab (Ctrl+PAGE_UP)', function(){ core.emit('view.tab-prev');})
 		.appendSeparator()
 		.append('toggle application fullscreen (F11)',function(){ core.emit('view.fullscreen'); })
-		.append('toggle editor pane _fullscreen',function(){ core.emit('view.fullscreen-editor'); })
-		.append('toggle _preview pane fullscreen',function(){ core.emit('view.fullscreen-preview'); })
+		.append('(un)maximize editor pane (Ctrl+f)',function(){ core.emit('view.fullscreen-editor'); })
+		.append('(un)maximize preview pane (Ctrl+p)',function(){ core.emit('view.fullscreen-preview'); })
 	);
 
 	//-- SETTINGS
@@ -142,6 +144,12 @@
 		})
 		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
 		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
+		.appendSeparator()
+		.append(subMenuItem('preview rendering mode')
+			.append('as you type', function(){ core.emit('settings.set', 'previewMode', 'sync')})
+			.append('delayed', function(){ core.emit('settings.set', 'previewMode', 'auto')})
+			.append('manually', function(){ core.emit('settings.set', 'previewMode', 'manual')})
+		)
 		.appendSeparator()
 		.append(subMenuItem('themes')
 			.append(windowThemeSubMenu)

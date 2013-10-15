@@ -44,6 +44,7 @@
 				, editorTheme: 'ambiance'
 				, previewTheme: 'mardownald-dark'
 				, previewCodeTheme: 'zenburn'
+				, previewMode: 'auto'
 			}
 			, JSON.parse(localStorage.getItem('settings')) || {}
 		);
@@ -76,12 +77,15 @@
 		core.on('editor.change', function(editor, content){
 			var tab = $('#tab-' + editor.editorId);
 			tab[editor.editor.isClean() ? 'removeClass' : 'addClass']('dirty');
-			waitingForPreviewUpdate && clearTimeout(waitingForPreviewUpdate)
-			waitingForPreviewUpdate = setTimeout(function(){
-				waitingForPreviewUpdate = false;
+			if ( global.settings.previewMode === 'sync' ){
 				core.emit('preview.update', editor.editor.getValue());
-			}, 400);
-
+			} else if ( global.settings.previewMode === 'auto' ){
+				waitingForPreviewUpdate && clearTimeout(waitingForPreviewUpdate)
+				waitingForPreviewUpdate = setTimeout(function(){
+					waitingForPreviewUpdate = false;
+					core.emit('preview.update', editor.editor.getValue());
+				}, 400);
+			}
 		});
 		core.on('editor.selected', function(editor){
 			core.emit('activeEditor.set', editor);
@@ -171,6 +175,10 @@
 			next.length || (next = tabs.get(nextOrPrev === 'next' ? 0 : tabs.length - 1));
 			next.click();
 		}
+		core.on('view.refresh-preview', function(){
+			var activeEditor = editor.getActive();
+			activeEditor && core.emit('preview.update', activeEditor.editor.getValue());
+		});
 		core.on('view.fullscreen', function(){
 			global.gui.Window.get().toggleFullscreen();
 		});
