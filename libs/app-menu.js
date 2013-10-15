@@ -131,7 +131,7 @@
 		, previewCodeThemeSubMenu = subMenuItem('highlighted code theme')
 	;
 	appMenu.append(subMenuItem('settings')
-		.append('_wrap long lines',{
+		.append('wrap long lines', {
 			type:'checkbox'
 			, click:function(){
 				if( this.checked ){
@@ -160,13 +160,24 @@
 	);
 
 	// get and append themes
-	function appendTheme(submenuItem, themesPath, cb){
+	function appendTheme(submenuItem, themesPath, cb, selectedTheme){
 		fs.readdir(themesPath, function(err, themes){
 			themes.forEach(function(theme){
-				theme.match(/\.css$/) && submenuItem.append(
-					theme = theme.replace(/.css$/,''),
-					function(){ cb(theme); }
-				)
+				if(! theme.match(/\.css$/) ){
+					return;
+				}
+				theme = theme.replace(/.css$/,'');
+				var item = menuItem(
+					theme
+					, function(){
+						cb(theme);
+						submenuItem.submenu.items.forEach(function(sibling){
+							sibling.checked && sibling !== item && (sibling.checked = false);
+						})
+					}
+					, {type: 'checkbox', checked: theme===selectedTheme}
+				);
+				submenuItem.append(item);
 			});
 		});
 	}
@@ -177,6 +188,7 @@
 			core.emit('application.setTheme', theme);
 			core.emit('settings.set','applicationTheme',theme);
 		}
+		, global.settings.applicationTheme
 	);
 	appendTheme(
 		editorThemeSubMenu
@@ -185,6 +197,7 @@
 			core.emit('editor.setTheme', theme);
 			core.emit('settings.set','editorTheme',theme);
 		}
+		, global.settings.editorTheme
 	);
 	appendTheme(
 		previewThemeSubMenu
@@ -193,6 +206,7 @@
 			core.emit('preview.setTheme', theme);
 			core.emit('settings.set','previewTheme',theme);
 		}
+		, global.settings.previewTheme
 	);
 	appendTheme(
 		previewCodeThemeSubMenu
@@ -201,6 +215,7 @@
 			core.emit('preview.setCodeTheme', theme);
 			core.emit('settings.set','previewCodeTheme',theme);
 		}
+		, global.settings.previewCodeTheme
 	);
 	var helpMenu = subMenuItem('?');
 	appMenu.append(helpMenu
