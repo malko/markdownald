@@ -35,6 +35,10 @@ function initEditor(self, domElmt){
 			, 'Shift-Tab': function(cm){ CodeMirror.commands["indentLess"](cm); }
 			, 'F3': 'findNext'
 			, 'Shift-F3': 'findPrev'
+			, 'Ctrl-H': 'replace'
+			, 'Shift-Ctrl-H': 'replaceAll'
+			, 'Shift-Ctrl-F': false // unbind default replace binding
+			, 'Shift-Ctrl-R': false
 			, 'Esc': 'clearSearch'
 			, 'Ctrl-G': function(cm){
 				cm.openDialog('go to line <input type=number/>', function(l){
