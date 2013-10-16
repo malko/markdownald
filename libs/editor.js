@@ -110,7 +110,7 @@ function fileWatchStart(self){
 	});
 }
 
-Editor.prototype.isDirty = function(){ return !! this.editor.isClean(); }
+Editor.prototype.isDirty = function(){ return !this.editor.isClean(); }
 Editor.prototype.markClean = function(){ ! this.editor.markClean(); return this;}
 
 //-- activeEditor tracking
