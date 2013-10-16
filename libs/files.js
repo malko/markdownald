@@ -8,6 +8,13 @@ var core = require('./core.js')
 	, inputSaveAsHTML = $('<input type="file" id="exportAsHTML" style="display:none" nwsaveas="" />').appendTo('body')
 ;
 
+function resetInputFile(elmt){
+	var f = new window.File('','')
+		, files = new window.FileList()
+	;
+	files.append(f);
+	elmt.files = files;
+}
 //-- bind hidden file input elements
 inputOpen.on('change',function(){
 	var i=0, l=this.files.length;
@@ -46,7 +53,10 @@ core.on('file.opened', function(filePath){
 });
 
 
-core.on('file.saveas', function(){ inputSaveAs.click(); });
+core.on('file.saveas', function(){
+	inputSaveAs.click();
+	resetInputFile(inputSaveAs[0]);
+});
 
 core.on('file.new', function(){ editor.tabNew(); });
 core.on('file.save', function(filePath){
@@ -60,10 +70,18 @@ core.on('file.save', function(filePath){
 });
 core.on('file.html-export', function(){
 	inputSaveAsHTML.attr('nwsaveas', editor.getActive().fileName.replace(/\.[^.]+$/,'') + '.html').click();
+	resetInputFile(inputSaveAsHTML[0]);
 });
 core.on('file.html-exported', function(exportPath){
-		try{
-		var html = ['<!DOCTYPE html>\n<html>\n<head>\n\t<meta charset="utf-8">\n\t']
+	if (! exportPath) {
+		return;
+	}
+	try{
+		var html = [
+				'<!DOCTYPE html>\n<html>\n<head>\n\t'
+				,'<!-- generated using https://github.com/malko/markdownald -->\n\t'
+				,'<meta charset="utf-8">\n\t'
+			]
 			, title = $('#tabs .active').text().replace(/\.[^\.]+$/,'')
 			, content = $('#preview').html()
 			, previewTheme = $('link#previewTheme').attr('href')
@@ -71,7 +89,7 @@ core.on('file.html-exported', function(exportPath){
 			, hasCode = content.match(/<pre|code/)
 		;
 		html.push('<title>' + title + '</title>\n\t<style>\n');
-		html.push('#preview{ margin:0 auto; max-width:780px; box-shadow: 0 0 250px #000;}\n')
+		html.push('#preview{ margin:0 auto; max-width:780px; box-shadow: 0 0 250px #000;}\n');
 		html.push('#preview, #preview>article{border-radius: 1em;}\n');
 		html.push(fs.readFileSync(previewTheme));
 		hasCode && html.push(fs.readFileSync(previewCodeTheme));
