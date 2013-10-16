@@ -1,6 +1,6 @@
 # <img src="https://raw.github.com/malko/markdownald/master/markdownald.png" valign="middle"/> Markdownald
-This is another node-webkit application for markdown editing.
-It's really targeted for github flavored markdown and try to be a real desktop app, not a web app ported to node-webkit.
+
+A fully-fledged Markdown desktop application that supports Github Flavored Markdown. Created using Node-Webkit.
 
 # Installation
 First you will need to install node-webkit for your platform see [node-webkit](https://github.com/rogerwang/node-webkit) repository for details
@@ -10,9 +10,10 @@ then clone this repository:
 $ git clone git@github.com:malko/markdownald.git
 ```
 
-go to the application directory and launch node-webkit:
+go to the application directory, install the dependencies and launch node-webkit:
 ```
 $ cd markdownald
+$ npm install
 $ nm ./
 ```
 or under linux if nw is in your path you can launch directly 
