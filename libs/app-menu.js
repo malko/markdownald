@@ -168,7 +168,7 @@
 				}
 				theme = theme.replace(/.css$/,'');
 				var item = menuItem(
-					theme
+					theme.replace(/_/g,' ')
 					, function(){
 						cb(theme);
 						submenuItem.submenu.items.forEach(function(sibling){
