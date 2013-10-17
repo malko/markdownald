@@ -55,7 +55,6 @@ core.on('file.opened', function(filePath){
 
 core.on('file.saveas', function(){
 	inputSaveAs.click();
-	resetInputFile(inputSaveAs[0]);
 });
 
 core.on('file.new', function(){ editor.tabNew(); });
@@ -67,12 +66,13 @@ core.on('file.save', function(filePath){
 		core.emit('editor.save', activeEditor, filePath);
 		$('#tab-' + activeEditor.editorId).removeClass('dirty');
 	}
+	resetInputFile(inputSaveAs[0]);
 });
 core.on('file.html-export', function(){
 	inputSaveAsHTML.attr('nwsaveas', editor.getActive().fileName.replace(/\.[^.]+$/,'') + '.html').click();
-	resetInputFile(inputSaveAsHTML[0]);
 });
 core.on('file.html-exported', function(exportPath){
+	resetInputFile(inputSaveAsHTML[0]);
 	if (! exportPath) {
 		return;
 	}

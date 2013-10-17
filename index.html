@@ -4,12 +4,12 @@
 	<title>Markdownald</title>
 	<meta charset="UTF8" />
 
-	<link href="" type="text/css" rel="stylesheet" id="applicationTheme" />
-	<link href="" type="text/css" rel="stylesheet" id="previewCodeTheme"/>
-	<link href="" type="text/css" rel="stylesheet"  id="previewTheme" />
 	<link rel=stylesheet href="node_modules/codemirror/lib/codemirror.css">
 	<link rel=stylesheet href="node_modules/codemirror/addon/dialog/dialog.css">
 	<link href="node_modules/codemirror/theme/ambiance.css" type="text/css" rel="stylesheet" />
+	<link href="" type="text/css" rel="stylesheet" id="applicationTheme" />
+	<link href="" type="text/css" rel="stylesheet" id="previewCodeTheme"/>
+	<link href="" type="text/css" rel="stylesheet"  id="previewTheme" />
 
 	<script src="libs/winsize.js"></script>
 	<script src="libs/jquery-1.10.2.js"></script>
@@ -88,6 +88,7 @@
 		var waitingForPreviewUpdate=false;
 		core.on('editor.change', function(editor, content){
 			var tab = $('#tab-' + editor.editorId);
+			tab.is('.active') || tab.click();
 			tab[editor.isDirty() ? 'addClass' : 'removeClass']('dirty');
 			if ( global.settings.previewMode === 'sync' ){
 				core.emit('preview.update', editor.editor.getValue());
