@@ -9,6 +9,13 @@ var core = require('./core.js')
 preview.on('click', ':checkbox', function(){
 	return false;
 });
+preview.on('click', 'a[href]', function(e){
+	e.preventDefault();
+	e.stopImmediatePropagation();
+	global.gui.Shell.openExternal(this.href);
+	return false;
+})
+
 marked.setOptions({
 	gfm: true
 	, highlight: function (code, lang) {
