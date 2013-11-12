@@ -166,7 +166,8 @@ body{
     height:100%;
   }
   article{
-    margin: 0 auto 1em auto;
+    padding-bottom:1%;
+		min-height:97%;
     :first-child{
       margin-top:.25em !important;
     }
