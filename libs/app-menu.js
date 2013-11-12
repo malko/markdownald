@@ -148,6 +148,17 @@
 		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
 		.append(previewRenderingSubMenu)
+		.append(
+			'synchronized editor/preview scroll'
+			, {
+				type:'checkbox'
+				, checked: !! global.settings.previewSyncScroll
+				, click: function(){
+					core.emit('settings.set', 'previewSyncScroll', this.checked);
+					console.log('previewSyncScroll', this.checked);
+				}
+			}
+		)
 		.appendSeparator()
 		.append(subMenuItem('themes')
 			.append(windowThemeSubMenu)
