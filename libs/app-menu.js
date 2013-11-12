@@ -129,7 +129,9 @@
 		, windowThemeSubMenu = subMenuItem('Application theme')
 		, previewThemeSubMenu = subMenuItem('Preview theme')
 		, previewCodeThemeSubMenu = subMenuItem('highlighted code theme')
+		, previewRenderingSubMenu = subMenuItem('preview rendering mode');
 	;
+
 	appMenu.append(subMenuItem('settings')
 		.append('wrap long lines', {
 			type:'checkbox'
@@ -145,11 +147,7 @@
 		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
 		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
-		.append(subMenuItem('preview rendering mode')
-			.append('as you type', function(){ core.emit('settings.set', 'previewMode', 'sync')})
-			.append('delayed', function(){ core.emit('settings.set', 'previewMode', 'auto')})
-			.append('manually', function(){ core.emit('settings.set', 'previewMode', 'manual')})
-		)
+		.append(previewRenderingSubMenu)
 		.appendSeparator()
 		.append(subMenuItem('themes')
 			.append(windowThemeSubMenu)
@@ -158,6 +156,25 @@
 			.append(previewCodeThemeSubMenu)
 		)
 	);
+
+	// bind preview rendering mode
+	function appendRenderingMode(label, value){
+		var item = menuItem(
+			label
+			, function(){
+				core.emit('settings.set', 'previewMode', value);
+				previewRenderingSubMenu.submenu.items.forEach(function(sibling){
+					sibling.checked = false;
+				});
+				item.checked = true;
+			}
+			, {type:'checkbox', checked: value===global.settings.previewMode}
+		);
+		previewRenderingSubMenu.append(item);
+	}
+	appendRenderingMode('as you type', 'sync');
+	appendRenderingMode('delayed', 'auto');
+	appendRenderingMode('manual', 'manual');
 
 	// get and append themes
 	function appendTheme(submenuItem, themesPath, cb, selectedTheme){
