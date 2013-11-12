@@ -58,7 +58,8 @@ core.on('preview.update', function(md){
 			processing = false;
 		});
 	} catch (e){
-		window.alert('Error while comiling markdown:\n'+e);
+		//window.alert('Error while comiling markdown:\n'+e);
+		preview.html('<b style="color:red;">Parsing error</b>');
 		processing = false;
 	}
 })
