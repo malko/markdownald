@@ -20,6 +20,7 @@ body{
   margin:0 ;
   height:100%;
   vertical-align:top;
+	overflow:hidden;
 }
 
 #tabs{
