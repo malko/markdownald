@@ -189,8 +189,8 @@
 
 	// get and append themes
 	function appendTheme(submenuItem, themesPath, cb, selectedTheme){
-		fs.readdir(themesPath, function(err, themes){
-			themes.forEach(function(theme){
+		try{
+			fs.readdirSync(themesPath).forEach(function(theme){
 				if(! theme.match(/\.css$/) ){
 					return;
 				}
@@ -207,7 +207,7 @@
 				);
 				submenuItem.append(item);
 			});
-		});
+		}catch(e){ console.log(e);}
 	}
 	appendTheme(
 		windowThemeSubMenu

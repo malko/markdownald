@@ -14,38 +14,21 @@ go to the application directory, install the dependencies and launch node-webkit
 ```
 $ cd markdownald
 $ npm install
-$ nm ./
+$ nw ./
 ```
-or under linux if nw is in your path you can launch directly 
+or under linux if nw is in your path you can launch directly
 ```
 $ ./markdownald/markdownald.sh
 ```
 
 ## Todo
-- [x] better editor bindings on return and indent/outdent
-- [x] navigate through tabs with keyboard navigation
-- [x] check for dirty file before closing tab / window
-- [x] allow drag on drop of files from file system
-- [x] add some delay for the rendering to avoid flickering in certain cases
 - [-] add editor bindings for common style opération (bold, underline, add link, images...)
-  - [x] bold, italic
   - [ ] lists, bloquotes, titles
   - [ ] images, links
-- [x] add fullscreen support
 - [ ] add recent list file management to the file menu
-- [x] add detection for disk file change
-- [x] add mode wrap to user settings
 - [-] better css for markdown rendering
   - [-] add some styles
-  - [x] add a display for checkboxes as on github flavord markdown
-- [x] allow users to change theme settings
-  - [x] for editor
-  - [x] font size
-  - [x] for markdown
-  - [x] for interface
-  - [x] for highlighted code preview
-- [x] export generated output to html
-- [ ] export generated output to pdf 
+- [ ] export generated output to pdf
 - [ ] integrate with github api to read and save directly from github
 
 ### Built thanks to others open source projects
