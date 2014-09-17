@@ -1,7 +1,9 @@
 {
   "name": "markdownald",
   "main": "index.html",
-  "window": {
+	"version": "0.0.2",
+	"licence": "MIT",
+	"window": {
     "min_width": 640,
     "min_height": 480,
     "toolbar": false,
