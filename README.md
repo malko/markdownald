@@ -2,8 +2,15 @@
 
 A fully-fledged Markdown desktop application that supports Github Flavored Markdown. Created using Node-Webkit.
 
+current release: v0.0.2 hamburger
+
 # Installation
-First you will need to install node-webkit for your platform see [node-webkit](https://github.com/rogerwang/node-webkit) repository for details
+## prebuilt binaries
+
+you can download prebuilt binaries for [latest release here](https://github.com/malko/markdownald/releases/latest)
+
+## from source
+First you will need to install node-webkit for your platform see [node-webkit](https://github.com/rogerwang/node-webkit) repository for details. If not already install install [nodejs](http://nodejs.org/) too.
 
 then clone this repository:
 ```
