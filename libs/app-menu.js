@@ -45,14 +45,14 @@
 			var key;
 			item.label = args.label && args.label.replace(/_(.)/,function(m,k){
 				key= ' (Ctrl+' + k + ')';
-				shortcuts.on('Ctrl+'+k, click)
+				shortcuts.on('Ctrl+'+k, click);
 				return k;
 			});
 			item.label += key || '';
 		} else {
 			label.replace(/ \(([^\)]+)\)$/, function(m,k){
 				additionalShortcuts = additionalShortcuts.concat(k.split(/\s*,\s*/));
-			})
+			});
 		}
 		additionalShortcuts.forEach(function(k){ shortcuts.on(k, click); });
 		return item;
@@ -86,14 +86,14 @@
 		, fs = require('fs')
 		, appMenu = new gui.Menu({type:'menubar'})
 	;
-	
+
 	//-- FILE MENU
 	appMenu.append(subMenuItem('_file')
-		.append('_new', function(){ core.emit('file.new') })
-		.append('_open', function(){ core.emit('file.open') })
+		.append('_new', function(){ core.emit('file.new'); })
+		.append('_open', function(){ core.emit('file.open'); })
 		.appendSeparator()
-		.append('_save', function(){ core.emit('file.save') })
-		.append('save as (Ctrl+Shift+s)', function(){ core.emit('file.saveas') })
+		.append('_save', function(){ core.emit('file.save'); })
+		.append('save as (Ctrl+Shift+s)', function(){ core.emit('file.saveas'); })
 		.appendSeparator()
 		.append('export html', function(){ core.emit('file.html-export'); })
 		.appendSeparator()
@@ -129,7 +129,7 @@
 		, windowThemeSubMenu = subMenuItem('Application theme')
 		, previewThemeSubMenu = subMenuItem('Preview theme')
 		, previewCodeThemeSubMenu = subMenuItem('highlighted code theme')
-		, previewRenderingSubMenu = subMenuItem('preview rendering mode');
+		, previewRenderingSubMenu = subMenuItem('preview rendering mode')
 	;
 
 	appMenu.append(subMenuItem('settings')
@@ -143,6 +143,13 @@
 				}
 			}
 			, checked: !! global.settings.wrapmode
+		})
+		.append('indent with tab', {
+			type:'checkbox'
+			, click: function(){
+				core.emit('settings.tabindent', this.checked);
+			}
+			, checked: !! global.settings.tabindent
 		})
 		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
 		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
@@ -201,7 +208,7 @@
 						cb(theme);
 						submenuItem.submenu.items.forEach(function(sibling){
 							sibling.checked && sibling !== item && (sibling.checked = false);
-						})
+						});
 					}
 					, {type: 'checkbox', checked: theme===selectedTheme}
 				);

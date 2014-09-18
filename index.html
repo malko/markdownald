@@ -57,6 +57,7 @@
 				, previewTheme: 'markdownald-dark'
 				, previewCodeTheme: 'zenburn'
 				, previewMode: 'auto'
+				, tabindent: false
 			}
 			, JSON.parse(localStorage.getItem('settings')) || {}
 		);
@@ -214,15 +215,17 @@
 
 		//-- menu settings binding
 		core.on('settings.wrapon', function(){
-			global.settings.wrapmode = true;
 			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', true); });
-			localStorage.setItem('settings', JSON.stringify(global.settings));
+			core.emit('settings.set', 'wrapmode', true);
 		});
 		core.on('settings.wrapoff', function(){
-			global.settings.wrapmode = false;
-			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', false); })
-			localStorage.setItem('settings', JSON.stringify(global.settings));
+			editor.cmApplyAll(function(cm){ cm.setOption('lineWrapping', false); });
+			core.emit('settings.set', 'wrapmode', false);
 		});
+		core.on('settings.tabindent', function(tabindent){
+			editor.cmApplyAll(function(cm){ cm.setOption('indentWithTabs', tabindent); });
+			core.emit('settings.set', 'tabindent', tabindent);
+		})
 
 
 		core.on('font-size.change',function(size){

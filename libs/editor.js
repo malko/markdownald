@@ -26,7 +26,7 @@ function initEditor(self, domElmt){
 	self.editor = global.CodeMirror(self.el[0], {
 		value: self.content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
 		, mode: "gfm"
-		, indentWithTabs: true
+		, indentWithTabs: !!global.settings.tabindent
 		, lineNumbers: true
 		, lineWrapping: !!global.settings.wrapmode
 		, theme: global.settings.editorTheme
