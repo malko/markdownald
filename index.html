@@ -111,8 +111,15 @@
 			$(window).trigger('resize');
 		});
 		core.on('editor.diskchange', function(editor, event, fileName){
+			// check file always exists
+			if (! fs.existsSync(editor.filePath)) {
+				if (confirm(editor.filePath + ' doesn\'t exists anymore\nDo you want to close related buffer ?')) {
+					core.emit('editor.close', editor);
+				}
+				return false;
+			}
 			if (event === 'change' && fileName){
-				confirm(editor.filePath + ' has changed\nDo you want to reload from disk') && core.emit('editor.reload', editor.filePath);
+				confirm(editor.filePath + ' has changed\nDo you want to reload from disk ?') && core.emit('editor.reload', editor.filePath);
 			}
 		});
 

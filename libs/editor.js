@@ -110,7 +110,7 @@ function fileWatchStart(self){
 	self.watcher = fs.watch(self.filePath, function(event, fileName){
 		// fire event in 50ms to avoid multiple call and stop watching in the while
 		fileWatchStop(self);
-		setTimeout(function(){ core.emit('editor.diskchange', self, event, fileName); fileWatchStart(self);}, 50);
+		setTimeout(function(){ core.emit('editor.diskchange', self, event, fileName);}, 50);
 	});
 }
 
@@ -181,6 +181,7 @@ core.on('editor.reload', function(filePath){
 		editor.editor.setValue(fs.readFileSync(filePath).toString());
 		editor.editor.markClean();
 		core.emit('editor.change', editor, editor.editor.getValue());
+		fileWatchStart(editor);
 	}
 });
 //-- clean up when closing editor
