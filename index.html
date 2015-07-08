@@ -295,15 +295,20 @@
 		//-- allow dropping file
 		document.body.addEventListener('drop', function (e) {
 			var i = 0, l = e.dataTransfer.files.length, filePath;
-			if( l ){
-			  e.preventDefault();
-			  for(; i < l; i++) {
-				filePath = e.dataTransfer.files[i].path;
-				filePath.match(/\.(te?xt|markdown|md)$/i)  && core.emit('file.opened', filePath);
-			  }
-			  return false;
-		   }
+			if ( l ) {
+				e.preventDefault();
+				for(; i < l; i++) {
+					filePath = e.dataTransfer.files[i].path;
+					filePath.match(/\.(te?xt|markdown|md)$/i)  && core.emit('file.opened', filePath);
+				}
+				return false;
+			}
 		}, true);
+
+		//-- display menu on right click
+		document.body.addEventListener('contextmenu', function (e) {
+			core.emit('app-menu.show', e.x, e.y);
+		});
 
 		//-- finally tell the world we are ready and new file if none is already opened
 		core.emit('application.ready');

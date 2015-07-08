@@ -1,5 +1,7 @@
 ;(function(){
-	var shortcuts = require('./shortcuts.js');
+	var shortcuts = require('./shortcuts.js')
+		, core = require('./core.js')
+	;
 	if( gui.Window && gui.Window.get() && gui.Window.get().menu ){
 		return;
 	}
@@ -271,4 +273,7 @@
 
 	// finally add the menu to the window
 	gui.Window.get().menu = appMenu;
+	core.on('app-menu.show', function (x, y) {
+		appMenu.popup(x, y);
+	});
 })();

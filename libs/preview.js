@@ -14,7 +14,7 @@ preview.on('click', 'a[href]', function(e){
 	e.stopImmediatePropagation();
 	global.gui.Shell.openExternal(this.href);
 	return false;
-})
+});
 
 marked.setOptions({
 	gfm: true
