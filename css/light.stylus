@@ -1,4 +1,4 @@
-bg=#ddd;
+bg=#F2F1F0;
 fg=#333;
 bgred=#d66;
 borderColor=fg + 33%;

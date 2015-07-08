@@ -229,7 +229,7 @@
 
 
 		core.on('font-size.change',function(size){
-			$('body').css('fontSize', size + 'px');
+			$('body, html').css('fontSize', size + 'px');
 			var editor = $('.CodeMirror:visible');
 			editor.length && editor.get(0).CodeMirror.refresh();
 		});

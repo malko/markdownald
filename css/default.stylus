@@ -59,7 +59,7 @@ body{
     position:relative;
     margin:0 0.5px;
     cursor:pointer;
-    background: bg - 20%;
+    background: bg + 20%;
     opacity:.6;
     &.active{
       opacity:1;
