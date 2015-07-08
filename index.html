@@ -251,10 +251,10 @@
 
 		// open from command line
 		global.gui.App.argv.forEach(function(arg){
-			if (fs.existsSync(arg)) {
-				editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
-			}
-		})
+			fs.stat(arg, function(err, stats){
+				err || stats.isFile(arg) && editor.tabOpen(fs.realpathSync(arg), fs.readFileSync(arg).toString());
+			});
+		});
 
 		//-- avoid quiting with dirty files
 		global.gui.Window.get().on('close', function(){
