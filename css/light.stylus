@@ -1,13 +1,13 @@
 bg=#F2F1F0;
 fg=#333;
-bgred=#d66;
+bgred=#e66;
 borderColor=fg + 33%;
 bgpanes=#fff;
 fgpanes=fg;
 radius=4px;
 sectionRadius=radius * 2;
 scrollSize=8px;
-scrollColor=bg + 33%;
+scrollColor=bg - 10%;
 shadowPanes(){
   box-shadow: none;// 0 1px  2px fg;
 }
@@ -25,25 +25,25 @@ body{
 
 #tabs{
   position:absolute;
-  top:5%;
+  top:2px;
   left:0;
   white-space: nowrap;
   overflow-Y:hidden;
   overflow-X:hidden;
-  font-family:Arial;
-  font-size:.9em;
-  line-height:1.5em;
-  height:2em;
-  width:99%;
-  z-index:10;
-  margin:-1.5em .5% 0 .5%;
+  font-family:Helvetica, arial, freesans, clean, sans-serif;
+  font-size:.9rem;
+  line-height:1.5rem;
+  height:1.4rem;
+  width:100%;
+  z-index:1;
+  /*margin:-1.5em 0 0 0;*/
   &:hover{
     overflow-X:auto;
   }
   &:before{
     content:"";
     position:absolute;
-    top:1.5em;
+    top:calc(1.4em + 1px);
     display:block;
     border-bottom:solid borderColor 1px;
     height:0;
@@ -55,30 +55,32 @@ body{
     border:solid borderColor 1px;
     border-bottom:none;
     border-radius:radius radius 0 0;
-    padding:0 1.55em 0 .25em;
+    padding:0 1.75em 0 .25em;
     position:relative;
-    margin:0 0.5px;
+    margin:0 1px 0 0;
     cursor:pointer;
-    background: bg - 20%;
+    background: bg + 20%;
     opacity:.6;
+    height: 1.4rem;
     &.active{
       opacity:1;
       background: bg;
       font-style:italic;
-      z-index:1;
+      z-index:10;
     }
     .close{
       position:absolute;
+      opacity: 1;
       font-style:normal;
       top:50%;
       margin-top:-.5em;
       right:.25em;
       background:bgred;
-      width:1.05em;
+      width:1em;
       height:1em;
-      line-height:1em;
+      line-height:.9em;
       text-align:center;
-      border-radius:2px;
+      border-radius:3px;
       visibility:hidden;
     }
     &:hover{
@@ -97,21 +99,25 @@ body{
 
 
 #panes{
-  height:94%;
-  padding-bottom:.25%;
-  width:99%;
-  margin:0 .5%;
+  box-sizing: border-box;
+  height:calc(100% - 1.4rem - 2px);
+  /*padding-bottom:.5em;*/
+  width:100%;
+  margin:0;
   position:absolute;
   left:0;
-  top:5%;
+  top:calc(1.4rem + 2px);
   #editors, #preview{
+    box-sizing: border-box;
+    height:100%;
     background:bgpanes;
     color:fgpanes;
-    height:99.5%;
-    width:49.5%;
-    margin:.25%;
+    width:50%;
+    /*margin-right:.5%;*/
     shadowPanes();
-    border-radius: sectionRadius;
+  }
+  #editors{
+    /*border-radius:0 0 sectionRadius sectionRadius / 0 0 sectionRadius sectionRadius;*/
   }
   &.fullscreen{
     >*{
@@ -121,11 +127,11 @@ body{
       display:none;
       &.fullscreen{
         display:block;
-        width:99%;
+        width:100%;
       }
     }
     #preview.fullscreen{
-      width:99%;
+      width:100%;
     }
   }
 }
@@ -141,7 +147,7 @@ body{
   }
   > div, .CodeMirror{
     height:100%;
-    border-radius: sectionRadius;
+    /*border-radius: sectionRadius;*/
   }
   &.fullscreen{
     position:absolute;
@@ -167,7 +173,7 @@ body{
     height:100%;
   }
   article{
-  	padding-bottom:1%;
+    padding-bottom:1%;
 		min-height:97%;
     :first-child{
       margin-top:.25em !important;
@@ -181,12 +187,12 @@ body{
   height:scrollSize;
 }
 ::-webkit-scrollbar-track {
-  background-color:scrollColor - 33%;
-  border-radius: scrollSize * .5;
+  background-color:scrollColor;
+  /*border-radius: scrollSize * .5;*/
 }
 ::-webkit-scrollbar-thumb {
-  background-color: scrollColor;
-  border-radius: scrollSize * .5;
+  background-color: scrollColor - 33%;
+  /*border-radius: scrollSize * .5;*/
 }
 ::-webkit-scrollbar-corner{
   background-color:transparent;

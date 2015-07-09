@@ -128,7 +128,7 @@
 		//-- editors ui bindings
 		core.on('editor.ready', function(editor){
 			// create a tab and pane related to the editor
-			var tabTemplate = '<div id="tab-' + editor.editorId + '" title="' + editor.filePath + '"><span class="filename">' + editor.fileName + '</span><span class="close"> X </span></div>'
+			var tabTemplate = '<div id="tab-' + editor.editorId + '" title="' + editor.filePath + '"><span class="filename">' + editor.fileName + '</span><span class="close"> - </span></div>'
 				, paneTemplate = '<div></div>'
 				, tab = $(tabTemplate).appendTo("#tabs")
 				, pane = $(paneTemplate).appendTo("#editors")

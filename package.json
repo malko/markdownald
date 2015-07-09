@@ -1,22 +1,21 @@
 {
-  "name": "markdownald",
-  "main": "index.html",
+	"name": "markdownald",
+	"main": "index.html",
 	"version": "0.0.2",
 	"licence": "MIT",
 	"window": {
-    "min_width": 640,
-    "min_height": 480,
-    "toolbar": false,
-    "show": false,
-    "icon": "markdownald.png"
-  },
-  "dependencies": {
-    "marked": "~0.2.9",
-    "codemirror": "~3.18.0",
-    "highlight.js": "~7.3.0"
-    },
-    "scripts": {
-      "build" : "nwbuild -p osx32,osx64,linux32,linux64,win32,win64 -o ../markdownald_build --buildType versioned ./"
-   }
-
+		"min_width": 640,
+		"min_height": 480,
+		"toolbar": false,
+		"show": false,
+		"icon": "markdownald.png"
+	},
+	"dependencies": {
+		"marked": "~0.2.9",
+		"codemirror": "~3.18.0",
+		"highlight.js": "~7.3.0"
+	},
+	"scripts": {
+		"build" : "nwbuild -p osx32,osx64,linux32,linux64,win32,win64 -o ../markdownald_build --buildType versioned ./"
+	}
 }
