@@ -11,8 +11,8 @@
 		"icon": "markdownald.png"
 	},
 	"dependencies": {
-		"marked": "~0.2.9",
-		"codemirror": "~3.18.0",
+		"marked": "~0.3.3",
+		"codemirror": "~5.4.0",
 		"highlight.js": "~7.3.0"
 	},
 	"scripts": {
