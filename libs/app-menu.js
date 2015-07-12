@@ -247,7 +247,7 @@
 	);
 	appendTheme(
 		previewCodeThemeSubMenu
-		, './css/highlightjs'
+		, './node_modules/highlight.js/styles'
 		, function(theme){
 			core.emit('preview.setCodeTheme', theme);
 			core.emit('settings.set','previewCodeTheme',theme);

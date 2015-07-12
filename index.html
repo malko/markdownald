@@ -242,7 +242,7 @@
 			$('head link#previewTheme').attr('href','./css/markdown/' + theme + '.css');
 		});
 		core.on('preview.setCodeTheme', function(theme){
-			$('head link#previewCodeTheme').attr('href','./css/highlightjs/' + theme + '.css');
+			$('head link#previewCodeTheme').attr('href','./node_modules/highlight.js/styles/' + theme + '.css');
 		});
 
 		// open from command line
