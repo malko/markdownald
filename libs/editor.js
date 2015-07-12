@@ -25,11 +25,13 @@ function initEditor(self, domElmt){
 	self.el = global.$(domElmt).prop('id', 'content-' + self.editorId);
 	self.editor = global.CodeMirror(self.el[0], {
 		value: self.content || 'Enter your content here\n```\nfunction test(a, b, c){\n\treturn a + b * c / 100;\n]\n```'
-		, mode: "gfm"
+		, mode: "markdown"
 		, indentWithTabs: !!global.settings.tabindent
 		, lineNumbers: true
 		, lineWrapping: !!global.settings.wrapmode
 		, theme: global.settings.editorTheme
+		, keyMap: 'sublime'
+		, styleActiveLine: true
 		, extraKeys:{
 			'Tab': function(cm){ CodeMirror.commands["indentMore"](cm); }
 			, 'Shift-Tab': function(cm){ CodeMirror.commands["indentLess"](cm); }
@@ -39,7 +41,10 @@ function initEditor(self, domElmt){
 			, 'Shift-Ctrl-H': 'replaceAll'
 			, 'Shift-Ctrl-F': false // unbind default replace binding
 			, 'Shift-Ctrl-R': false
-			, 'Esc': 'clearSearch'
+			, 'Esc': function(cm) {
+				cm.execCommand('clearSearch');
+				cm.execCommand('singleSelection');
+			}
 			, 'Ctrl-G': function(cm){
 				cm.openDialog('go to line <input type=number/>', function(l){
 					console.log(l);
@@ -47,28 +52,29 @@ function initEditor(self, domElmt){
 				});
 				//- var l = window.prompt('Go to line'); l && cm.setCursor(-1+l,0)
 			}
-			, 'Enter': function(cm){
-				if( cm.somethingSelected() ){
-					cm.replaceSelection('\n');
-					cm.setCursor(cm.getCursor("end"));
-				} else {
-					var cursor = cm.getCursor()
-						, line = cm.getLine(cursor.line)
-						, listMatch = line.match(listCaptureExp)
-					;
-					if(! listMatch ){
-						CodeMirror.commands.newlineAndIndent(cm);
-					} else {
-						if( ! listMatch[3] ){ // empty line remove the list marker
-							cm.setLine(cursor.line, '');
-							cm.replaceSelection("\n", "end", "+input");
-						} else { // add list marker at start of line
-							CodeMirror.commands.newlineAndIndent(cm);
-							cm.replaceSelection(listMatch[2], "end");
-						}
-					}
-				}
-			}
+			, 'Enter': 'newlineAndIndentContinueMarkdownList'
+			// , 'Enter': function(cm){
+			// 	if( cm.somethingSelected() ){
+			// 		cm.replaceSelection('\n');
+			// 		cm.setCursor(cm.getCursor("end"));
+			// 	} else {
+			// 		var cursor = cm.getCursor()
+			// 			, line = cm.getLine(cursor.line)
+			// 			, listMatch = line.match(listCaptureExp)
+			// 		;
+			// 		if(! listMatch ){
+			// 			CodeMirror.commands.newlineAndIndent(cm);
+			// 		} else {
+			// 			if( ! listMatch[3] ){ // empty line remove the list marker
+			// 				cm.setLine(cursor.line, '');
+			// 				cm.replaceSelection("\n", "end", "+input");
+			// 			} else { // add list marker at start of line
+			// 				CodeMirror.commands.newlineAndIndent(cm);
+			// 				cm.replaceSelection(listMatch[2], "end");
+			// 			}
+			// 		}
+			// 	}
+			// }
 		}
 	});
 	self.editor.on('change',function(editor){

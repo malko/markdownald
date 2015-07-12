@@ -153,8 +153,8 @@
 			}
 			, checked: !! global.settings.tabindent
 		})
-		.append('increase font size (Ctrl+Numpad_add)', function(){ core.emit('settings.font-increment'); })
-		.append('decrease font size (Ctrl+Numpad_subtract)', function(){ core.emit('settings.font-decrement'); })
+		.append('increase font size (Ctrl+Numpad_substract, Ctrl++)', function(){ core.emit('settings.font-increment'); })
+		.append('decrease font size (Ctrl+Numpad_add, Ctrl+-)', function(){ core.emit('settings.font-decrement'); })
 		.appendSeparator()
 		.append(previewRenderingSubMenu)
 		.append(
@@ -247,7 +247,7 @@
 	);
 	appendTheme(
 		previewCodeThemeSubMenu
-		, './css/highlightjs'
+		, './node_modules/highlight.js/styles'
 		, function(theme){
 			core.emit('preview.setCodeTheme', theme);
 			core.emit('settings.set','previewCodeTheme',theme);
@@ -268,7 +268,7 @@
 		})
 	);
 	//- ~global.gui.App.argv.indexOf('--dev') &&
-	helpMenu.appendSeparator().append('show devtools', function(){ global.gui.Window.get().showDevTools(); });
+	helpMenu.appendSeparator().append('show devtools (Ctrl+Shift+i)', function(){ global.gui.Window.get().showDevTools(); });
 
 
 	// finally add the menu to the window

@@ -97,18 +97,17 @@ var core = require('./core.js')
 		, MINUS:189
 		, SUBSTRACT:189
 		, UNDERSCORE:189
-		, '-':189
+		, '-':54
 		, '_':189
 		, PERIOD:190
 		, '.':190
 	}
-	, keyExp = new RegExp("^.*?\\b([a-zA-Z0-9-]+|" + Object.keys(keyCodes).map(function(a){ return a.replace(/([+?|.\\$^*])/g,"\\$1")}).join('|') + ")$",'i')
+	, keyExp = new RegExp("^.*?\\+([a-zA-Z0-9-]+|" + Object.keys(keyCodes).map(function(a){ return a.replace(/([+?|.\\$^*])/g,"\\$1")}).join('|') + ")$",'i')
 	, shortcut
 ;
 
 
 function standardize(shortcut){
-	//- console.log(shortcut)
 	var keys;
 	if( typeof shortcut === 'string' ){
 		keys = { Alt: !!shortcut.match(/\bAlt\b/)
