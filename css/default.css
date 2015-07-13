@@ -9,6 +9,9 @@ body {
   vertical-align: top;
   overflow: hidden;
 }
+a {
+  color: #99f;
+}
 #tabs {
   position: absolute;
   top: 2px;
@@ -137,12 +140,13 @@ body {
   height: 100%;
 }
 #preview {
+  box-sizing: border-box;
   display: inline-block;
   position: relative;
   vertical-align: top;
   overflow: auto;
   font-family: Helvetica, arial, freesans, clean, sans-serif;
-  padding: 0;
+  padding: 1em;
 }
 #preview.fullscreen {
   position: absolute;

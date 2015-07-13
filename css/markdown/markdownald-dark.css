@@ -2,7 +2,7 @@
 #preview article{
     font-family: Helvetica, arial, freesans, clean, sans-serif;
     line-height: 1;
-    padding:0 1rem;
+    padding:0;
     color: #ddd;
 }
 #preview h1, #preview h2, #preview h3, #preview h4 {

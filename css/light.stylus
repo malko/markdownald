@@ -22,6 +22,9 @@ body{
   vertical-align:top;
 	overflow:hidden;
 }
+a {
+  color: #33f;
+}
 
 #tabs{
   position:absolute;
@@ -159,12 +162,13 @@ body{
 }
 
 #preview{
+  box-sizing: border-box;
   display:inline-block;
   position:relative;
   vertical-align:top;
   overflow:auto;
   font-family: Helvetica, arial, freesans, clean, sans-serif;
-  padding:0;
+  padding:1em;
   &.fullscreen{
     position:absolute;
     top:0;
