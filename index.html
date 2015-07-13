@@ -57,6 +57,7 @@
 				, previewMode: 'auto'
 				, previewSyncScroll: true
 				, tabindent: true
+				, wrapmode: true
 			}
 			, JSON.parse(localStorage.getItem('settings')) || {}
 		);
@@ -224,7 +225,7 @@
 		core.on('settings.tabindent', function(tabindent){
 			editor.cmApplyAll(function(cm){ cm.setOption('indentWithTabs', tabindent); });
 			core.emit('settings.set', 'tabindent', tabindent);
-		})
+		});
 
 
 		core.on('font-size.change',function(size){
