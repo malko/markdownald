@@ -264,7 +264,19 @@
 		})
 		.appendSeparator()
 		.append('about', function(){
-			global.window.alert('Markdownald the markdown editor\nUnder MIT alike license by Jonathan Gotti');
+			global.window.alert([
+				'Markdownald the markdown editor'
+				, 'Under MIT alike license by Jonathan Gotti'
+				, '\n'
+				, 'Made with:'
+				, '- nw.js https://github.com/nwjs/nw.js: under MIT licence by Intel Corp, The Chromium Authors and rogerwang'
+				// , '\n'
+				, '- CodeMirror.js https://highlightjs.org/: under BSD licence by Ivan Sagalaev'
+				// , '\n'
+				, '- highlight.js https://codemirror.net/ind<ex.html. Under  MIT license by Marijn Haverbeke'
+				// , '\n'
+				, '- marked https://github.com/chjj/marked: under  MIT license by Christopher Jeffreye'
+			].join('\n'));
 		})
 	);
 	//- ~global.gui.App.argv.indexOf('--dev') &&
