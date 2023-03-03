@@ -4,6 +4,9 @@ A fully-fledged Markdown desktop application that supports Github Flavored Markd
 
 current release: v0.0.2 hamburger
 
+## Deprecation notice:
+> This project is not maintained anymore. It was fun to make it at the time being, but there's good support for markdown edition in major editors like vscode now. 
+
 # Installation
 ## prebuilt binaries
 
